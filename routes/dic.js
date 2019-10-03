@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
 var mysql = require('../import/mysql');
-mysql.connect();
 
 class Response {
   constructor(success = true, message = null, data = null) {
