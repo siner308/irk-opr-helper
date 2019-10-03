@@ -14,8 +14,8 @@
 // @grant           unsafeWindow
 // @grant           GM_notification
 // @grant           GM_addStyle
-// @downloadURL     http://hawkkim.cafe24.com/irk-opr-helper.user.js
-// @updateURL       http://hawkkim.cafe24.com/irk-opr-helper.user.js
+// @downloadURL     https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
+// @updateURL       https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
 // ==/UserScript==
 
 /* globals unsafeWindow, angular */
