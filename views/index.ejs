@@ -3,9 +3,83 @@
   <head>
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %>!!!</p>
+  <body class="container">
+    <h1>번역 사전</h1>
+
+    <form action="/dic/add" method="post" id="form">
+      <div class="form-group">
+        <label for="english">영어 원문</label>
+        <input
+          type="text"
+          class="form-control"
+          id="english"
+          name="english"
+          placeholder="영어 원문"
+        />
+      </div>
+      <div class="form-group">
+        <label for="korean">번역할 한국어</label>
+        <input
+          type="text"
+          class="form-control"
+          id="korean"
+          name="korean"
+          placeholder="번역할 한국어"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div style="height:50px;"></div>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">원문</th>
+          <th scope="col">번역</th>
+          <th scope="col">등록자</th>
+          <th scope="col">등록일시</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rows.forEach((v, i) => { %>
+        <tr>
+          <th scope="row"><%=i+1%></th>
+          <td><%=v['english']%></td>
+          <td><%=v['korean']%></td>
+          <td><%=v['creatorname']%></td>
+          <td><%=v['createtime'].toLocaleString('ko-KR')%></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
   </body>
+
+  <script>
+    $(() => {
+      $('#form').submit(e => {
+        console.log($(this).children('#english'));
+        e.preventDefault();
+        $.ajax({
+          url: './dic/add',
+          method: 'post',
+          data: {
+            english: $('#english').val(),
+            korean: $('#korean').val(),
+          },
+        }).done(response => {
+          location.reload();
+        });
+      });
+    });
+  </script>
 </html>
