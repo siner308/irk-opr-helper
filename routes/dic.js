@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('../import/mysql');
+var dicmodel = require('../models/dic');
 
 class Response {
   constructor(success = true, message = null, data = null) {
@@ -14,32 +14,20 @@ class Response {
   }
 }
 
-/* GET home page. */
-router.post('/add', function(req, res, next) {
-  /**
-   * @type String - 번역후 국문
-   */
+router.post('/add', async (req, res, next) => {
   var korean = req.body['korean'];
-  /**
-   * @type String - 번역전 원문
-   */
   var english = req.body['english'];
 
-  mysql.query(
-    `insert into opr_translate (english, korean, createtime, updatetime, creator, updater) 
-    VALUES ('${english.toLowerCase()}', '${korean.toLowerCase()}', NOW(), NOW(), 1, 1)`,
-    (err, rows, fields) => {
-      if (err) {
-        console.log(err);
-        var response = new Response(false, err.message, null);
-        res.send(response.json());
-        return;
-      }
+  var [success, result] = await dicmodel.add(english, korean);
+  if (success) res.send(new Response(true, null, null).json());
+  else res.send(new Response(false, result, null).json());
+});
 
-      var response = new Response(true, null, null).json();
-      res.send(response);
-    },
-  );
+router.get('/search', async (req, res) => {
+  var keyword = req.query.keyword;
+  var result = await dicmodel.search(keyword);
+
+  res.send(new Response(true, null, result).json());
 });
 
 module.exports = router;
