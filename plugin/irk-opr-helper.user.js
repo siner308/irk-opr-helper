@@ -16,6 +16,8 @@
 // @grant           GM_addStyle
 // @downloadURL     https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
 // @updateURL       https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
+// @require         https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js
+// @require         http://hawkbro.cafe24app.com/javascripts/jquery.ajax-cross-origin.min.js
 // ==/UserScript==
 
 /* globals unsafeWindow, angular */
@@ -93,7 +95,20 @@ function init() {
         'span[ng-bind="subCtrl.pageData.streetAddress"]',
       );
 
-      parseAddress(addressElement);
+      let newaddress = parseAddress(addressElement);
+
+      $.ajax({
+        type: 'get',
+        crossOrigin: true,
+        url: 'http://hawkbro.cafe24app.com/dic/search',
+        data: {
+          keyword: newaddress,
+        },
+        success: function(response) {
+          console.log(response);
+          addressElement.innerText = response.data;
+        },
+      });
     }
   }
 
@@ -107,11 +122,14 @@ function init() {
      */
     let address = element.innerText;
     let splitted = address.replace('South Korea', '대한민국').split(/,| /);
+    let result = '';
 
     element.innerText = '';
 
     splitted.forEach(v => {
-      element.innerText = v + ' ' + element.innerText;
+      result = v + ' ' + result;
     });
+
+    return result;
   }
 }
