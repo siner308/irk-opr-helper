@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         0.0.1
+// @version         0.1
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -16,6 +16,7 @@
 // @grant           GM_addStyle
 // @downloadURL     https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
 // @updateURL       https://github.com/hawkkim/irk-opr-helper/raw/master/plugin/irk-opr-helper.user.js
+// @require         https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js
 // ==/UserScript==
 
 /* globals unsafeWindow, angular */
@@ -79,7 +80,7 @@ function init() {
     w.$scope = element => w.angular.element(element).scope();
   }
 
-  function initScript() {
+  async function initScript() {
     const subMissionDiv = w.document.getElementById('NewSubmissionController');
 
     // check if subCtrl exists (should exists if we're on /recon)
@@ -89,11 +90,45 @@ function init() {
       /**
        * @type Element
        */
-      let addressElement = w.document.querySelector(
+      const addressElement = w.document.querySelector(
         'span[ng-bind="subCtrl.pageData.streetAddress"]',
       );
 
-      parseAddress(addressElement);
+      const newaddress = parseAddress(addressElement);
+      var translated = [];
+
+      for (var word of newaddress) {
+        var k = await searchDic(word);
+        translated.push(k);
+      }
+
+      var result = translated.join(' ');
+      addressElement.innerText = result;
+    }
+  }
+
+  async function searchDic(word) {
+    var result;
+    try {
+      result = await $.ajax({
+        type: 'get',
+        url: `https://irk-opr-helper.firebaseio.com/dic.json`,
+        data: {
+          orderBy: `"english"`,
+          equalTo: `"${word.toLowerCase()}"`,
+          limitToLast: 1,
+        },
+      });
+      var ret;
+      try {
+        ret = Object.values(result)[0].korean;
+      } catch (error) {
+        ret = word;
+      }
+
+      return ret;
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -107,11 +142,8 @@ function init() {
      */
     let address = element.innerText;
     let splitted = address.replace('South Korea', '대한민국').split(/,| /);
+    splitted.reverse();
 
-    element.innerText = '';
-
-    splitted.forEach(v => {
-      element.innerText = v + ' ' + element.innerText;
-    });
+    return splitted;
   }
 }
