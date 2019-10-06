@@ -87,6 +87,7 @@ function init() {
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
       const subController = w.$scope(subMissionDiv).subCtrl;
 
+      $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
       /**
        * @type Element
        */
