@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         0.1
+// @version         0.1.2
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
