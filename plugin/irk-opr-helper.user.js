@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         0.1.2
+// @version         0.1.3
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -61,7 +61,7 @@ function init() {
     tryNumber--;
   }, 1000);
 
-  function initAngular() {
+  async function initAngular() {
     const el = w.document.querySelector('[ng-app="portalApp"]');
     w.$app = w.angular.element(el);
     w.$injector = w.$app.injector();
@@ -78,6 +78,25 @@ function init() {
     };
 
     w.$scope = element => w.angular.element(element).scope();
+
+    $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
+    /**
+     * @type Element
+     */
+    const addressElement = w.document.querySelector(
+      'span[ng-bind="subCtrl.pageData.streetAddress"]',
+    );
+
+    const newaddress = parseAddress(addressElement);
+    var translated = [];
+
+    for (var word of newaddress) {
+      var k = await searchDic(word);
+      translated.push(k);
+    }
+
+    var result = translated.join(' ');
+    addressElement.innerText = result;
   }
 
   async function initScript() {
@@ -86,25 +105,6 @@ function init() {
     // check if subCtrl exists (should exists if we're on /recon)
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
       const subController = w.$scope(subMissionDiv).subCtrl;
-
-      $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
-      /**
-       * @type Element
-       */
-      const addressElement = w.document.querySelector(
-        'span[ng-bind="subCtrl.pageData.streetAddress"]',
-      );
-
-      const newaddress = parseAddress(addressElement);
-      var translated = [];
-
-      for (var word of newaddress) {
-        var k = await searchDic(word);
-        translated.push(k);
-      }
-
-      var result = translated.join(' ');
-      addressElement.innerText = result;
     }
   }
 
@@ -142,8 +142,11 @@ function init() {
      * @type String
      */
     let address = element.innerText;
-    let splitted = address.replace('South Korea', '대한민국').split(/,| /);
-    splitted.reverse();
+    let splitted = address.replace('South Korea', '대한민국').split(/, | /);
+    splitted = splitted.filter(e => {
+      return e != '';
+    });
+    if (splitted.indexOf('대한민국') != 0) splitted.reverse();
 
     return splitted;
   }
