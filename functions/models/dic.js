@@ -37,6 +37,44 @@ async function add(english, korean, codename) {
 module.exports.add = add;
 
 /**
+ * 사전 업데이트
+ * @param { string } key 업데이트 할 문서의 키
+ * @param {*} english 업데이트 할 원문, 비었으면 업데이트 하지 않음
+ * @param {*} korean 업데이트 할 번역문, 비었으면 업데이트 하지 않음
+ * @param {*} codename 기여자 코드네임
+ */
+async function update(key, english, korean, codename) {
+  // 영문을 바꾸려는 경우 중복이 존재하는지 확인
+  if (!isEmpty(english)) {
+    try {
+      const existData = await dicRef.orderByChild('english').equalTo(english);
+      const fetched = await existData.once('value');
+      if (fetched.numChildren() > 0)
+        return new ApiResponse(false, 'ENGLISH IS EXISTS', null);
+    } catch (err) {
+      return new ApiResponse(false, err, null);
+    }
+  }
+
+  // 실제 업데이트
+  const doc = dicRef.child(key);
+  var newdoc = {
+    updater: codename,
+    updatetime: new Date().toLocaleString('ko-KR', { hour12: false }),
+  };
+  if (!isEmpty(english)) newdoc.english = english;
+  if (!isEmpty(korean)) newdoc.korean = korean;
+
+  try {
+    await doc.update(newdoc);
+    return new ApiResponse(true, null, newdoc);
+  } catch (err) {
+    return new ApiResponse(false, err, null);
+  }
+}
+module.exports.update = update;
+
+/**
  * 사전에서 삭제
  * @param { string } key 삭제 할 문서의 키
  */
@@ -51,5 +89,17 @@ async function remove(key) {
   }
 }
 module.exports.remove = remove;
+
+// #endregion
+
+// #region Private funcs
+
+/**
+ * 비었거나 null 인지 체크
+ * @param { string } value 체크 할 값
+ */
+function isEmpty(value) {
+  return value == undefined || value == '';
+}
 
 // #endregion
