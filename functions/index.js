@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 // #endregion
 
 // #region router 정의
-app.use('/api/dic', apiDicRouter);
+app.use('/api', apiDicRouter);
 // #endregion
 
 // Firebase Hoasting 에서 Request 를 받게 하기 위함

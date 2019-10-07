@@ -27,6 +27,7 @@
     <!-- my style/scripts -->
     <script src="/js/inc.js"></script>
     <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/glyphicon.css" />
   </head>
   <body class="container" style="padding-top:30px;">
     <div id="app">
@@ -81,20 +82,67 @@
           <tr>
             <th scope="col" class="text-center">원문</th>
             <th scope="col" class="text-center">번역</th>
-            <th scope="col" class="text-center">등록자</th>
+            <th scope="col" class="text-center">등록/수정</th>
             <th scope="col" class="text-center">
               등록일시
             </th>
+            <th scope="col" class="text-center"></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in filtered">
-            <td>{{ row.english }}</td>
-            <td>{{ row.korean }}</td>
+          <tr v-for="(row, k, index) in dics" :key="row.key" ref="items">
+            <td>
+              <span
+                v-show="!isEditing(row.key, 'english')"
+                @click="startEditing(row.key, k, 'english')"
+                >{{ row.english }}</span
+              >
+              <span v-show="isEditing(row.key, 'english')">
+                <input
+                  name="english"
+                  v-model="row.english"
+                  type="text"
+                  class="form-control input-sm"
+                  @keyup.enter="applyEdit(row.key, 'english')"
+                  @keyup.esc="cancelEdit(row.key, 'english')"
+                />
+              </span>
+            </td>
+            <td>
+              <span
+                v-show="!isEditing(row.key, 'korean')"
+                @click="startEditing(row.key, k, 'korean')"
+                >{{ row.korean }}</span
+              >
+              <span v-show="isEditing(row.key, 'korean')">
+                <input
+                  name="korean"
+                  v-model="row.korean"
+                  type="text"
+                  class="form-control input-sm"
+                  @keyup.enter="applyEdit(row.key, 'korean')"
+                  @keyup.esc="cancelEdit(row.key, 'korean')"
+                />
+              </span>
+            </td>
             <td class="text-center">
-              <span class="badge badge-secondary">{{ row.creator }}</span>
+              <span class="badge badge-info">{{ row.creator }}</span>
+              <span
+                class="badge badge-warning"
+                v-show="row.creator != row.updater"
+                >{{ row.updater }}</span
+              >
+              <span name="key" style="display:none;">{{ row.key }}</span>
             </td>
             <td class="text-center">{{ row.createtime }}</td>
+            <td class="text-center">
+              <span
+                :disabled="isProcessing"
+                @click="remove(row)"
+                class="btn btn-sm btn-danger glyphicon glyphicon-trash"
+                style="cursor:pointer;"
+              ></span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -110,6 +158,8 @@
             korean: '',
             isProcessing: false,
             codename: null,
+            editStatus: [],
+            editBeforeValue: '',
           };
         },
         computed: {
@@ -150,19 +200,84 @@
                 },
               );
               // 내려오는 data 가 순수 array 가 아니므로 array 로 변환
+
               this.dics = Object.keys(response.data)
                 .map(key => {
+                  response.data[key].key = key;
                   return response.data[key];
                 })
                 .reverse();
+
+              // sort. 나중을 위해 남겨둠
+              /*this.dics.sort((a, b) => {
+                if (a.english < b.english) return -1;
+                if (a.english > b.english) return 1;
+                return 0;
+              });*/
               // firebase 쿼리는 order 정렬을 못하므로 직접 뒤집어줌
             } catch (err) {
               console.log(err);
             }
           },
+          isEditing: function(key, where) {
+            if (this.editStatus[key] === undefined) {
+              this.editStatus[key] = new Object();
+              this.editStatus[key]['english'] = false;
+              this.editStatus[key]['korean'] = false;
+            }
+            return this.editStatus[key][where];
+          },
+          startEditing: async function(key, index, where) {
+            this.editStatus[key][where] = true;
+            await this.$forceUpdate();
+            var input = this.$refs.items[index].querySelector(
+              '[name=' + where + ']',
+            );
+            this.editBeforeValue = input.value;
+            input.focus();
+            input.select();
+          },
+          endEditing: function(key, where) {
+            this.editStatus[key][where] = false;
+            this.editBeforeValue = '';
+            this.$forceUpdate();
+          },
+          cancelEdit: function(key, where) {
+            var element = this.dics.find(e => e.key == key);
+            element[where] = this.editBeforeValue;
+            this.endEditing(key, where);
+          },
+          applyEdit: async function(key, where) {
+            var element = this.dics.find(e => e.key == key);
+            try {
+              this.isProcessing = true;
+              const response = await axios.put('/api/dic', {
+                key: key,
+                english: where == 'english' ? element.english : null,
+                korean: where == 'korean' ? element.korean : null,
+                codename: this.codename,
+              });
+
+              if (response.data.success == false) {
+                console.log(response.data.message);
+                this.cancelEdit(key, where);
+              } else {
+                element.updater = response.data.data.updater;
+                this.endEditing(key, where);
+              }
+            } catch (err) {
+              console.log(err);
+              this.cancelEdit(key, where);
+            } finally {
+              this.isProcessing = false;
+            }
+          },
           // 사전의 맨 앞에 새로운 줄 추가
           addData: async function(data) {
             this.dics.unshift(data);
+          },
+          removeData: async function(data) {
+            this.dics = this.dics.filter(e => e !== data);
           },
           onSubmit: async function() {
             try {
@@ -171,7 +286,7 @@
 
               this.isProcessing = true;
 
-              const response = await axios.post('/api/dic/add', {
+              const response = await axios.post('/api/dic', {
                 english: this.english.trim(),
                 korean: this.korean.trim(),
                 codename: this.codename,
@@ -190,6 +305,35 @@
             } finally {
               this.isProcessing = false;
               this.$refs.english.focus();
+            }
+          },
+          remove: async function(item) {
+            if (
+              confirm(
+                '현재 항목을 삭제합니다\n[' +
+                  item.english +
+                  ', ' +
+                  item.korean +
+                  ']',
+              ) == false
+            )
+              return;
+
+            try {
+              this.isProcessing = true;
+              const response = await axios.delete('/api/dic', {
+                data: {
+                  key: item.key,
+                },
+              });
+
+              if (response.data.success == false)
+                console.log(response.data.message);
+              else this.removeData(item);
+            } catch (err) {
+              console.log(err);
+            } finally {
+              this.isProcessing = false;
             }
           },
         },
