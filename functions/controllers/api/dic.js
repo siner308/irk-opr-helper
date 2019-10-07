@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-require('../../models/class/apiresponse');
+var ApiResponse = require('../../models/class/apiresponse');
 var dicmodel = require('../../models/dic');
 
 // #region Public functions
@@ -30,13 +30,13 @@ router.post('/add', async (req, res, next) => {
   res.json(responseBody);
 });
 
-router.get('/remove', async (req, res, next) => {
-  var key = req.query.key;
+router.delete('/dic', async (req, res, next) => {
+  var key = req.body.key;
   if (key == undefined || key == '')
     return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
 
   var responseBody = await dicmodel.remove(key);
-  res.json(responseBody);
+  return res.json(responseBody);
 });
 
 // #endregion
