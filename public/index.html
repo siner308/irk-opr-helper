@@ -262,6 +262,7 @@
                 console.log(response.data.message);
                 this.cancelEdit(key, where);
               } else {
+                element.updater = response.data.data.updater;
                 this.endEditing(key, where);
               }
             } catch (err) {
