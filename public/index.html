@@ -116,7 +116,9 @@
           filtered: function() {
             if (this.english.trim().length == 0) return this.dics;
             var result = this.dics.filter(dic => {
-              return dic.english.includes(this.english.trim());
+              return dic.english
+                .toLowerCase()
+                .includes(this.english.trim().toLowerCase());
             });
             return result;
           },
