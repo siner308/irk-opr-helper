@@ -130,7 +130,10 @@
           duplicated: function() {
             if (this.english.trim().length > 0) {
               return this.dics.some(e => {
-                return this.english == e.english;
+                return (
+                  this.english.toLowerCase().trim() ==
+                  e.english.toLowerCase().trim()
+                );
               });
             }
             return false;
