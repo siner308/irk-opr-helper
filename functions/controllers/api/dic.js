@@ -10,18 +10,16 @@ var dicmodel = require('../../models/dic');
  * 사전 추가 컨트롤러
  */
 router.post('/dic', async (req, res, next) => {
-  /**
-   * @type { string } 한글
-   */
   var korean = req.body.korean;
-  /**
-   * @type { string } 번역전 원문
-   */
   var english = req.body.english.toLowerCase();
-  /**
-   * @type { string } 등록자 코드네임
-   */
   var codename = req.body.codename;
+
+  if (isEmpty(english))
+    return res.json(new ApiResponse(false, 'ENGLISH IS EMPTY', null));
+  if (isEmpty(korean))
+    return res.json(new ApiResponse(false, 'KOREAN IS EMPTY', null));
+  if (isEmpty(codename))
+    return res.json(new ApiResponse(false, 'CODENAME IS EMPTY', null));
 
   /**
    * @type { ApiResponse }
@@ -37,32 +35,43 @@ router.put('/dic', async (req, res, next) => {
   var key = req.body.key;
   var english = req.body.english;
   var korean = req.body.korean;
+  var codename = req.body.codename;
 
-  if (
-    (english == undefined || english == '') &&
-    (korean == undefined || korean == '')
-  )
+  if (isEmpty(english) && isEmpty(korean))
     return res.json(new ApiResponse(false, 'VALUE IS EMPTY', null));
-  if (key == undefined || key == '')
+  if (isEmpty(key))
     return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
+  if (isEmpty(codename))
+    return res.json(new ApiResponse(false, 'CODENAME IS EMPTY', null));
 
-  return res.json(new ApiResponse(true, null, null));
+  var responseBody = await dicmodel.update(key, english, korean, codename);
+  return res.json(responseBody);
 });
 
 /**
  * 사전 삭제 컨트롤러
  */
 router.delete('/dic', async (req, res, next) => {
-  /**
-   * @type { string } Key
-   */
   var key = req.body.key;
-  if (key == undefined || key == '')
+
+  if (isEmpty(key))
     return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
 
   var responseBody = await dicmodel.remove(key);
   return res.json(responseBody);
 });
+
+// #endregion
+
+// #region Private funcs
+
+/**
+ * 비었거나 null 인지 체크
+ * @param { string } value 체크 할 값
+ */
+function isEmpty(value) {
+  return value == undefined || value == '';
+}
 
 // #endregion
 
