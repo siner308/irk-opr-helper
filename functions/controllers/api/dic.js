@@ -46,7 +46,6 @@ router.get('/dic', async (req, res, next) => {
   async function search(key) {
     try {
       var find = await dicmodel.search(key);
-      console.log(find);
       if (find == null) return key;
       else return find[Object.keys(find)[0]].korean;
     } catch (err) {

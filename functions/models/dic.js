@@ -12,7 +12,9 @@ var dicRef = db.ref('dic');
  */
 async function search(english) {
   try {
-    const searched = await dicRef.orderByChild('english').equalTo(english);
+    const searched = await dicRef
+      .orderByChild('english')
+      .equalTo(english.toLowerCase());
     const fetched = await searched.once('value');
     return fetched.val();
   } catch (err) {
