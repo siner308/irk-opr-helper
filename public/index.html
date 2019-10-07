@@ -27,6 +27,7 @@
     <!-- my style/scripts -->
     <script src="/js/inc.js"></script>
     <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/glyphicon.css" />
   </head>
   <body class="container" style="padding-top:30px;">
     <div id="app">
@@ -85,6 +86,7 @@
             <th scope="col" class="text-center">
               등록일시
             </th>
+            <th scope="col" class="text-center"></th>
           </tr>
         </thead>
         <tbody>
@@ -93,8 +95,17 @@
             <td>{{ row.korean }}</td>
             <td class="text-center">
               <span class="badge badge-secondary">{{ row.creator }}</span>
+              <span name="key" style="display:none;">{{ row.key }}</span>
             </td>
             <td class="text-center">{{ row.createtime }}</td>
+            <td class="text-center">
+              <span
+                :disabled="isProcessing"
+                @click="remove(row)"
+                class="btn btn-sm btn-danger glyphicon glyphicon-trash"
+                style="cursor:pointer;"
+              ></span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -152,6 +163,7 @@
               // 내려오는 data 가 순수 array 가 아니므로 array 로 변환
               this.dics = Object.keys(response.data)
                 .map(key => {
+                  response.data[key].key = key;
                   return response.data[key];
                 })
                 .reverse();
@@ -164,6 +176,9 @@
           addData: async function(data) {
             this.dics.unshift(data);
           },
+          removeData: async function(data) {
+            this.dics = this.dics.filter(e => e !== data);
+          },
           onSubmit: async function() {
             try {
               if (this.english.trim().length == 0) return;
@@ -171,7 +186,7 @@
 
               this.isProcessing = true;
 
-              const response = await axios.post('/api/dic/add', {
+              const response = await axios.post('/api/dic', {
                 english: this.english.trim(),
                 korean: this.korean.trim(),
                 codename: this.codename,
@@ -190,6 +205,35 @@
             } finally {
               this.isProcessing = false;
               this.$refs.english.focus();
+            }
+          },
+          remove: async function(item) {
+            if (
+              confirm(
+                '현재 항목을 삭제합니다\n[' +
+                  item.english +
+                  ', ' +
+                  item.korean +
+                  ']',
+              ) == false
+            )
+              return;
+
+            try {
+              this.isProcessing = true;
+              const response = await axios.delete('/api/dic', {
+                data: {
+                  key: item.key,
+                },
+              });
+
+              if (response.data.success == false)
+                console.log(response.data.message);
+              else this.removeData(item);
+            } catch (err) {
+              console.log(err);
+            } finally {
+              this.isProcessing = false;
             }
           },
         },
