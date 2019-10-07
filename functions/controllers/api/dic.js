@@ -7,6 +7,54 @@ var dicmodel = require('../../models/dic');
 // #region Public functions
 
 /**
+ * 영어로 한글을 가져옴, 띄어쓰기 단위로 각각 번역해서 가져옴
+ */
+router.get('/dic', async (req, res, next) => {
+  var keyword = req.query.keyword;
+  if (keyword == undefined || keyword == '')
+    return res.json(new ApiResponse(false, 'KEYWORD IS EMPTY', null));
+
+  var splitted = keyword.split(' ');
+
+  // 여러 단어인 경우
+  if (splitted.length > 1) {
+    var result = [];
+
+    for (var s of splitted) {
+      try {
+        result.push(await search(s));
+      } catch (err) {
+        return res.json(new ApiResponse(false, err, null));
+      }
+    }
+
+    return res.json(new ApiResponse(true, null, result.join(' ')));
+  }
+  // 한 단어인 경우
+  else {
+    try {
+      return res.json(new ApiResponse(true, null, await search(keyword)));
+    } catch (err) {
+      return res.json(new ApiResponse(false, err, null));
+    }
+  }
+
+  /**
+   * 모델에서 가져오는 코드를 묶어놓음
+   * @param { string } key
+   */
+  async function search(key) {
+    try {
+      var find = await dicmodel.search(key);
+      if (find == null) return key;
+      else return find[Object.keys(find)[0]].korean;
+    } catch (err) {
+      throw err;
+    }
+  }
+});
+
+/**
  * 사전 추가 컨트롤러
  */
 router.post('/dic', async (req, res, next) => {
