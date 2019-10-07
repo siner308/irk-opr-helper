@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'BareunDotum';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/style/BareunDotumOTFPro2.woff2') format('woff2'),
+    url('/style/BareunDotumOTFPro2.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'BareunDotum';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/style/BareunDotumOTFPro3.woff2') format('woff2'),
+    url('/style/BareunDotumOTFPro3.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'BareunDotum';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/style/BareunDotumOTFPro1.woff2') format('woff2'),
+    url('/style/BareunDotumOTFPro1.woff') format('woff');
+}
+* {
+  font-family: 'Bareundotum', sans-serif;
+}
+
+table td {
+  font-size: 0.9em;
+}
+table th {
+  text-align: center;
+}
