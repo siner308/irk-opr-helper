@@ -24,7 +24,9 @@ async function add(english, korean, codename) {
   };
   try {
     // set() 은 return 값이 error
-    const err = await dicRef.push().set(newRow);
+    var newDocRef = dicRef.push();
+    const err = await newDocRef.set(newRow);
+    newRow.key = newDocRef.key;
 
     if (err) return new ApiResponse(false, err, null);
     else return new ApiResponse(true, null, newRow);
