@@ -103,7 +103,7 @@
                   v-model="row.english"
                   type="text"
                   class="form-control input-sm"
-                  @keyup.enter="endEditing(row.key, 'english')"
+                  @keyup.enter="applyEdit(row.key, 'english')"
                   @keyup.esc="cancelEdit(row.key, 'english')"
                 />
               </span>
@@ -120,7 +120,7 @@
                   v-model="row.korean"
                   type="text"
                   class="form-control input-sm"
-                  @keyup.enter="endEditing(row.key, 'korean')"
+                  @keyup.enter="applyEdit(row.key, 'korean')"
                   @keyup.esc="cancelEdit(row.key, 'korean')"
                 />
               </span>
@@ -240,8 +240,30 @@
           cancelEdit: function(key, where) {
             var element = this.dics.find(e => e.key == key);
             element[where] = this.editBeforeValue;
-            this.editBeforeValue = '';
             this.endEditing(key, where);
+          },
+          applyEdit: async function(key, where) {
+            var element = this.dics.find(e => e.key == key);
+            try {
+              this.isProcessing = true;
+              const response = await axios.put('/api/dic', {
+                key: key,
+                english: where == 'english' ? element.english : null,
+                korean: where == 'korean' ? element.korean : null,
+              });
+
+              if (response.data.success == false) {
+                console.log(response.data.message);
+                this.cancelEdit(key, where);
+              } else {
+                this.endEditing(key, where);
+              }
+            } catch (err) {
+              console.log(err);
+              this.cancelEdit(key, where);
+            } finally {
+              this.isProcessing = false;
+            }
           },
           // 사전의 맨 앞에 새로운 줄 추가
           addData: async function(data) {
