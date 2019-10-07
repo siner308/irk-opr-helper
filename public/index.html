@@ -90,11 +90,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, index) in filtered" :key="row.key" ref="items">
+          <tr v-for="(row, k, index) in dics" :key="row.key" ref="items">
             <td>
               <span
                 v-show="!isEditing(row.key, 'english')"
-                @click="startEditing(row.key, index, 'english')"
+                @click="startEditing(row.key, k, 'english')"
                 >{{ row.english }}</span
               >
               <span v-show="isEditing(row.key, 'english')">
@@ -103,14 +103,15 @@
                   v-model="row.english"
                   type="text"
                   class="form-control input-sm"
-                  @blur="endEditing(row.key, 'english')"
+                  @keyup.enter="endEditing(row.key, 'english')"
+                  @keyup.esc="cancelEdit(row.key, 'english')"
                 />
               </span>
             </td>
             <td>
               <span
                 v-show="!isEditing(row.key, 'korean')"
-                @click="startEditing(row.key, index, 'korean')"
+                @click="startEditing(row.key, k, 'korean')"
                 >{{ row.korean }}</span
               >
               <span v-show="isEditing(row.key, 'korean')">
@@ -119,7 +120,8 @@
                   v-model="row.korean"
                   type="text"
                   class="form-control input-sm"
-                  @blur="endEditing(row.key, 'korean')"
+                  @keyup.enter="endEditing(row.key, 'korean')"
+                  @keyup.esc="cancelEdit(row.key, 'korean')"
                 />
               </span>
             </td>
@@ -152,6 +154,7 @@
             isProcessing: false,
             codename: null,
             editStatus: [],
+            editBeforeValue: '',
           };
         },
         computed: {
@@ -192,6 +195,7 @@
                 },
               );
               // 내려오는 data 가 순수 array 가 아니므로 array 로 변환
+
               this.dics = Object.keys(response.data)
                 .map(key => {
                   response.data[key].key = key;
@@ -224,12 +228,20 @@
             var input = this.$refs.items[index].querySelector(
               '[name=' + where + ']',
             );
+            this.editBeforeValue = input.value;
             input.focus();
             input.select();
           },
           endEditing: function(key, where) {
             this.editStatus[key][where] = false;
+            this.editBeforeValue = '';
             this.$forceUpdate();
+          },
+          cancelEdit: function(key, where) {
+            var element = this.dics.find(e => e.key == key);
+            element[where] = this.editBeforeValue;
+            this.editBeforeValue = '';
+            this.endEditing(key, where);
           },
           // 사전의 맨 앞에 새로운 줄 추가
           addData: async function(data) {
