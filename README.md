@@ -53,3 +53,8 @@ OPR Tools 코드를 기반으로 제작되었습니다
 
 ### 버그제보
 코드네임 HawkBro로 연락 주십시오
+
+### 개발환경
+Database - Google Firebase Realtime Database
+Web (Frontend) - Vue.js / Bootstrap
+Web (Backside) - Node.js / Google Firebase
