@@ -82,7 +82,7 @@
           <tr>
             <th scope="col" class="text-center">원문</th>
             <th scope="col" class="text-center">번역</th>
-            <th scope="col" class="text-center">등록자</th>
+            <th scope="col" class="text-center">등록/수정</th>
             <th scope="col" class="text-center">
               등록일시
             </th>
@@ -126,7 +126,12 @@
               </span>
             </td>
             <td class="text-center">
-              <span class="badge badge-secondary">{{ row.creator }}</span>
+              <span class="badge badge-info">{{ row.creator }}</span>
+              <span
+                class="badge badge-warning"
+                v-show="row.creator != row.updater"
+                >{{ row.updater }}</span
+              >
               <span name="key" style="display:none;">{{ row.key }}</span>
             </td>
             <td class="text-center">{{ row.createtime }}</td>
@@ -257,6 +262,7 @@
                 console.log(response.data.message);
                 this.cancelEdit(key, where);
               } else {
+                element.updater = response.data.data.updater;
                 this.endEditing(key, where);
               }
             } catch (err) {

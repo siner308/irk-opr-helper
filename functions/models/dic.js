@@ -56,6 +56,18 @@ async function update(key, english, korean, codename) {
     }
   }
 
+  // 한글을 바꾸려는 경우 중복이 존재하는지 확인
+  if (!isEmpty(korean)) {
+    try {
+      const existData = await dicRef.orderByChild('korean').equalTo(korean);
+      const fetched = await existData.once('value');
+      if (fetched.numChildren() > 0)
+        return new ApiResponse(false, 'KOREAN IS EXISTS', null);
+    } catch (err) {
+      return new ApiResponse(false, err, null);
+    }
+  }
+
   // 실제 업데이트
   const doc = dicRef.child(key);
   var newdoc = {
