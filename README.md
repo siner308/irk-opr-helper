@@ -29,8 +29,7 @@ OPR Tools 코드를 기반으로 제작되었습니다
 - iOS에서 TamperMonkey를 사용할 수 있는 브라우저가 있다면 제보 바랍니다
 
 ### 필수 프로그램
-- TamperMonkey 플러그인
-- IITC를 사용하는 중이면 이미 깔려 있습니다
+- TamperMonkey 플러그인. 아래 주소에서 설치하십시오. (IITC를 사용하는 중이면 이미 깔려 있습니다)
   - 크롬 https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
   - 엣지 https://www.tampermonkey.net/?ext=dhdg&browser=edge
   - 사파리 https://www.tampermonkey.net/?ext=dhdg&browser=safari
