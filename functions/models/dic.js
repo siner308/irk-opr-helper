@@ -8,9 +8,9 @@ var dicRef = db.ref('dic');
 
 /**
  * 사전에 새 Entity를 등록
- * @param { String } english 원문
- * @param { String } korean 번역한 한글
- * @param { String } codename 등록자 코드네임
+ * @param { string } english 원문
+ * @param { string } korean 번역한 한글
+ * @param { string } codename 등록자 코드네임
  * @returns { ApiResponse }
  */
 async function add(english, korean, codename) {
@@ -33,5 +33,21 @@ async function add(english, korean, codename) {
   }
 }
 module.exports.add = add;
+
+/**
+ * 사전에서 삭제
+ * @param { string } key 삭제 할 문서의 키
+ */
+async function remove(key) {
+  try {
+    const err = await dicRef.child(key).remove();
+
+    if (err) return new ApiResponse(false, err, null);
+    else return new ApiResponse(true, null, null);
+  } catch (err) {
+    return new ApiResponse(false, err, null);
+  }
+}
+module.exports.remove = remove;
 
 // #endregion

@@ -30,6 +30,15 @@ router.post('/add', async (req, res, next) => {
   res.json(responseBody);
 });
 
+router.get('/remove', async (req, res, next) => {
+  var key = req.query.key;
+  if (key == undefined || key == '')
+    return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
+
+  var responseBody = await dicmodel.remove(key);
+  res.json(responseBody);
+});
+
 // #endregion
 
 module.exports = router;
