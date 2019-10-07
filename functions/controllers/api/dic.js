@@ -9,7 +9,7 @@ var dicmodel = require('../../models/dic');
 /**
  * 사전 추가 컨트롤러
  */
-router.post('/add', async (req, res, next) => {
+router.post('/dic', async (req, res, next) => {
   /**
    * @type { string } 한글
    */
