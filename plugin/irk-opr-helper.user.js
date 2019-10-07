@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         0.1.3
+// @version         1.0.003
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -78,25 +78,6 @@ function init() {
     };
 
     w.$scope = element => w.angular.element(element).scope();
-
-    $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
-    /**
-     * @type Element
-     */
-    const addressElement = w.document.querySelector(
-      'span[ng-bind="subCtrl.pageData.streetAddress"]',
-    );
-
-    const newaddress = parseAddress(addressElement);
-    var translated = [];
-
-    for (var word of newaddress) {
-      var k = await searchDic(word);
-      translated.push(k);
-    }
-
-    var result = translated.join(' ');
-    addressElement.innerText = result;
   }
 
   async function initScript() {
@@ -105,6 +86,22 @@ function init() {
     // check if subCtrl exists (should exists if we're on /recon)
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
       const subController = w.$scope(subMissionDiv).subCtrl;
+
+      $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
+      /**
+       * @type Element
+       */
+      const addressElement = w.document.querySelector(
+        'span[ng-bind="subCtrl.pageData.streetAddress"]',
+      );
+
+      const addressReverse = parseAddress(addressElement).join(' ');
+      try {
+        var x = await searchDic(addressReverse);
+        addressElement.innerText = x;
+      } catch (err) {
+        addressElement.innerText = addressReverse;
+      }
     }
   }
 
@@ -113,23 +110,16 @@ function init() {
     try {
       result = await $.ajax({
         type: 'get',
-        url: `https://irk-opr-helper.firebaseio.com/dic.json`,
+        url: 'https://irk-opr-helper.web.app/api/dic',
         data: {
-          orderBy: `"english"`,
-          equalTo: `"${word.toLowerCase()}"`,
-          limitToLast: 1,
+          keyword: word,
         },
       });
-      var ret;
-      try {
-        ret = Object.values(result)[0].korean;
-      } catch (error) {
-        ret = word;
-      }
 
-      return ret;
+      if (result.success == false) throw null;
+      return result.data;
     } catch (error) {
-      console.error(error);
+      return word + '<br />불러오기에 실패하였습니다';
     }
   }
 
