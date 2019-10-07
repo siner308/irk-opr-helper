@@ -7,6 +7,21 @@ var dicRef = db.ref('dic');
 // #region Public functions
 
 /**
+ * 사전 검색
+ * @param { string } english
+ */
+async function search(english) {
+  try {
+    const searched = await dicRef.orderByChild('english').equalTo(english);
+    const fetched = await searched.once('value');
+    return fetched.val();
+  } catch (err) {
+    throw err;
+  }
+}
+module.exports.search = search;
+
+/**
  * 사전에 새 Entity를 등록
  * @param { string } english 원문
  * @param { string } korean 번역한 한글
