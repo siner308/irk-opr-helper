@@ -1,6 +1,9 @@
 # irk-opr-helper
 IRK 유저분들을 위한 리콘 도우미 플러그인 입니다
+
 OPR Tools 코드를 기반으로 제작되었습니다
+
+__현재 문서를 꼭! 끝까지 다 읽어주세요!!!__
 
 ### 제작
 - HawkBro@RES/Incheon
