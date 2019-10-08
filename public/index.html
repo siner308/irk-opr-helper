@@ -80,11 +80,49 @@
       <table class="table table-striped table-sm" id="dictable">
         <thead class="thead-dark">
           <tr>
-            <th scope="col" class="text-center">원문</th>
-            <th scope="col" class="text-center">번역</th>
-            <th scope="col" class="text-center">등록/수정</th>
+            <th scope="col" class="text-center">
+              원문
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'english' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'english' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center">
+              번역
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'korean' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'korean' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center">
+              등록/수정
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'creator' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'creator' && sortByAsc == false"
+              ></span>
+            </th>
             <th scope="col" class="text-center">
               등록일시
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'createtime' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'createtime' && sortByAsc == false"
+              ></span>
             </th>
             <th scope="col" class="text-center"></th>
           </tr>
@@ -162,6 +200,9 @@
             codename: null,
             editStatus: [],
             editBeforeValue: '',
+
+            sortkey: 'createtime',
+            sortByAsc: false,
           };
         },
         computed: {
@@ -172,6 +213,8 @@
                 .toLowerCase()
                 .includes(this.english.trim().toLowerCase());
             });
+
+            result = this.sortByEmbeddedKey(result, this.sortkey);
             return result;
           },
           isEmpty: function() {
@@ -198,17 +241,21 @@
               const response = await axios.get(
                 'https://irk-opr-helper.firebaseio.com/dic.json',
                 {
-                  orderBy: `"createtime"`,
+                  orderBy: `{this.sortkey}`,
                 },
               );
               // 내려오는 data 가 순수 array 가 아니므로 array 로 변환
 
-              this.dics = Object.keys(response.data)
-                .map(key => {
-                  response.data[key].key = key;
-                  return response.data[key];
-                })
-                .reverse();
+              var buffer = Object.keys(response.data).map(key => {
+                response.data[key].key = key;
+                return response.data[key];
+              });
+
+              this.dics = this.dicsSortedByEmbeddedKey(
+                buffer,
+                this.sortkey,
+                false,
+              );
 
               // sort. 나중을 위해 남겨둠
               /*this.dics.sort((a, b) => {
@@ -337,6 +384,32 @@
             } finally {
               this.isProcessing = false;
             }
+          },
+          dicsSortedByEmbeddedKey: function(arr, sortkey, isAsc = true) {
+            var buffer = arr.sort((a, b) => {
+              var va, vb;
+              switch (sortkey) {
+                case 'english':
+                  va = a.english;
+                  vb = b.english;
+                  break;
+                case 'korean':
+                  va = a.korean;
+                  vb = b.korean;
+                  break;
+                case 'createtime':
+                  va = a.createtime;
+                  vb = b.craatetime;
+                  break;
+              }
+              if (va > vb) return 1;
+              if (va < vb) return -1;
+              return 0;
+            });
+
+            if (isAsc == false) buffer = buffer.reverse();
+
+            return buffer;
           },
         },
         created: async function() {
