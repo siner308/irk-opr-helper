@@ -56,7 +56,12 @@ OPR Tools 코드를 기반으로 제작되었습니다
 ### 버그제보
 코드네임 HawkBro로 연락 주십시오
 
+### Donation
+받지 않습니다.
+정 도움을 주시고 싶으신 분은 커피나 사주세요.
+프로그램의 원재료는 개발자와 커피 입니다
+
 ### 개발환경
 - Database - Google Firebase Realtime Database
 - Web (Frontend) - Vue.js / Bootstrap
-- Web (Backside) - Node.js / Google Firebase
+- Web (Backend) - Node.js / Google Firebase
