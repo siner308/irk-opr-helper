@@ -1,9 +1,10 @@
 # irk-opr-helper
+__!!보안강조!! 모바일인 분들은 아래의 View All of README.md 를 눌러서 현재 문서를 꼭! 끝까지 다 읽어주세요!!!__
+
 IRK 유저분들을 위한 리콘 도우미 플러그인 입니다
 
 OPR Tools 코드를 기반으로 제작되었습니다
 
-__현재 문서를 꼭! 끝까지 다 읽어주세요!!!__
 
 ### 제작
 - HawkBro@RES/Incheon
