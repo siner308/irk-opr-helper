@@ -102,9 +102,10 @@
                   name="english"
                   v-model="row.english"
                   type="text"
-                  class="form-control input-sm"
+                  class="form-control input-xxs"
                   @keyup.enter="applyEdit(row.key, 'english')"
                   @keyup.esc="cancelEdit(row.key, 'english')"
+                  @blur="cancelEdit(row.key, 'english')"
                 />
               </span>
             </td>
@@ -119,9 +120,10 @@
                   name="korean"
                   v-model="row.korean"
                   type="text"
-                  class="form-control input-sm"
+                  class="form-control input-xxs"
                   @keyup.enter="applyEdit(row.key, 'korean')"
                   @keyup.esc="cancelEdit(row.key, 'korean')"
+                  @blur="cancelEdit(row.key, 'korean')"
                 />
               </span>
             </td>
