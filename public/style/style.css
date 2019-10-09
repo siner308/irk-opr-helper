@@ -34,3 +34,6 @@ table th {
 .input-xxs {
   height: 1.5em !important;
 }
+#dictable th {
+  cursor: pointer;
+}
