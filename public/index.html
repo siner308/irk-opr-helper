@@ -290,16 +290,21 @@
             input.select();
           },
           endEditing: function(key, where) {
+            if (this.isEditing(key, where) == false) return;
             this.editStatus[key][where] = false;
             this.editBeforeValue = '';
             this.$forceUpdate();
           },
           cancelEdit: function(key, where) {
+            if (this.isEditing(key, where) == false) return;
             var element = this.dics.find(e => e.key == key);
             element[where] = this.editBeforeValue;
+
             this.endEditing(key, where);
           },
           applyEdit: async function(key, where) {
+            if (this.isEditing(key, where) == false) return;
+
             var element = this.dics.find(e => e.key == key);
             try {
               this.isProcessing = true;
