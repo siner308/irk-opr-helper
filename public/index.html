@@ -69,7 +69,7 @@
         </div>
         <button
           class="btn btn-info"
-          :disabled="isProcessing || isEmpty || duplicated"
+          :disabled="isProcessing || isEmptyFormInputs || englishDuplicated"
         >
           Submit
         </button>
@@ -80,11 +80,53 @@
       <table class="table table-striped table-sm" id="dictable">
         <thead class="thead-dark">
           <tr>
-            <th scope="col" class="text-center">원문</th>
-            <th scope="col" class="text-center">번역</th>
-            <th scope="col" class="text-center">등록/수정</th>
-            <th scope="col" class="text-center">
+            <th scope="col" class="text-center" @click="changeSort('english')">
+              원문
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey === 'english' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey === 'english' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center" @click="changeSort('korean')">
+              번역
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'korean' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'korean' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center" @click="changeSort('creator')">
+              등록/수정
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'creator' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'creator' && sortByAsc == false"
+              ></span>
+            </th>
+            <th
+              scope="col"
+              class="text-center"
+              @click="changeSort('createtime')"
+            >
               등록일시
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'createtime' && sortByAsc"
+              ></span
+              ><span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'createtime' && sortByAsc == false"
+              ></span>
             </th>
             <th scope="col" class="text-center"></th>
           </tr>
@@ -162,24 +204,38 @@
             codename: null,
             editStatus: [],
             editBeforeValue: '',
+
+            sortkey: 'createtime',
+            sortByAsc: false,
           };
         },
         computed: {
+          /**
+           * 원본 사전에 대해 키워드 필터링을 합니다. 검색 대상은 원문-영어
+           */
           filtered: function() {
+            // 입력값이 없으면 필터링 해제
             if (this.english.trim().length == 0) return this.dics;
             var result = this.dics.filter(dic => {
               return dic.english
                 .toLowerCase()
                 .includes(this.english.trim().toLowerCase());
             });
+
             return result;
           },
-          isEmpty: function() {
+          /**
+           * 폼의 입력값이 비어있는지 확인
+           */
+          isEmptyFormInputs: function() {
             return (
               this.english.trim().length == 0 || this.korean.trim().length == 0
             );
           },
-          duplicated: function() {
+          /**
+           * 현재 입력한 영어원문의 키워드가 사전에 이미 존재하는지 확인
+           */
+          englishDuplicated: function() {
             if (this.english.trim().length > 0) {
               return this.dics.some(e => {
                 return (
@@ -192,7 +248,9 @@
           },
         },
         methods: {
-          // 사전 데이터를 가져옴
+          /**
+           * 서버에서 사전 데이터를 가져옴
+           */
           fetchData: async function() {
             try {
               const response = await axios.get(
@@ -209,14 +267,6 @@
                   return response.data[key];
                 })
                 .reverse();
-
-              // sort. 나중을 위해 남겨둠
-              /*this.dics.sort((a, b) => {
-                if (a.english < b.english) return -1;
-                if (a.english > b.english) return 1;
-                return 0;
-              });*/
-              // firebase 쿼리는 order 정렬을 못하므로 직접 뒤집어줌
             } catch (err) {
               console.log(err);
             }
@@ -338,8 +388,41 @@
               this.isProcessing = false;
             }
           },
+          changeSort: function(key) {
+            // 현재 정렬중인 키를 다시 정렬하게 하면 정렬 순서를 뒤집음, 그렇지 않으면 항상 오름차순
+            if (this.sortkey == key) this.sortByAsc = !this.sortByAsc;
+            else this.sortByAsc = true;
+            this.sortkey = key;
+
+            this.dics.sort((a, b) => {
+              var va, vb;
+              switch (this.sortkey) {
+                case 'english':
+                  va = a.english;
+                  vb = b.english;
+                  break;
+                case 'korean':
+                  va = a.korean;
+                  vb = b.korean;
+                  break;
+                case 'createtime':
+                  va = a.createtime;
+                  vb = b.createtime;
+                  break;
+                case 'creator':
+                  va = a.creator;
+                  vb = b.creator;
+                  break;
+              }
+              // 내림차순 정렬일 경우 sort 판별값에 -1 을 곱해서 뒤집어줌
+              if (va > vb) return 1 * this.sortByAsc == true ? 1 : -1;
+              if (va < vb) return -1 * this.sortByAsc == true ? 1 : -1;
+              return 0;
+            });
+          },
         },
         created: async function() {
+          /** 코드네임 쿠키가 있나 봐서 없으면 입력받아 저장 */
           await this.fetchData();
           var codename = getCookie('codename');
 
