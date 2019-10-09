@@ -306,6 +306,17 @@
             if (this.isEditing(key, where) == false) return;
 
             var element = this.dics.find(e => e.key == key);
+
+            // 한글 수정을 했는데 기존과 같으면 취소
+            if (
+              (where == 'korean' &&
+                this.editBeforeValue.trim() == element.korean.trim()) ||
+              (where == 'english' &&
+                this.editBeforeValue.trim().toLowerCase() ==
+                  element.english.trim().toLowerCase())
+            )
+              return this.cancelEdit(key, where);
+
             try {
               this.isProcessing = true;
               const response = await axios.put('/api/dic', {
