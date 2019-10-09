@@ -31,3 +31,9 @@ table td {
 table th {
   text-align: center;
 }
+.input-xxs {
+  height: 1.5em !important;
+}
+#dictable th {
+  cursor: pointer;
+}

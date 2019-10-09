@@ -1,5 +1,5 @@
 var ApiResponse = require('./class/apiresponse');
-
+var moment = require('moment-timezone');
 var admin = require('firebase-admin');
 var db = admin.database();
 var dicRef = db.ref('dic');
@@ -36,8 +36,12 @@ async function add(english, korean, codename) {
     korean: korean,
     creator: codename,
     updater: codename,
-    createtime: new Date().toLocaleString('ko-KR', { hour12: false }),
-    updatetime: new Date().toLocaleString('ko-KR', { hour12: false }),
+    createtime: moment()
+      .tz('Asia/Seoul')
+      .format('YYYY-MM-DD HH:mm'),
+    updatetime: moment()
+      .tz('Asia/Seoul')
+      .format('YYYY-MM-DD HH:mm'),
   };
   try {
     // set() 은 return 값이 error
@@ -89,7 +93,9 @@ async function update(key, english, korean, codename) {
   const doc = dicRef.child(key);
   var newdoc = {
     updater: codename,
-    updatetime: new Date().toLocaleString('ko-KR', { hour12: false }),
+    updatetime: moment()
+      .tz('Asia/Seoul')
+      .format('YYYY-MM-DD HH:mm'),
   };
   if (!isEmpty(english)) newdoc.english = english;
   if (!isEmpty(korean)) newdoc.korean = korean;
