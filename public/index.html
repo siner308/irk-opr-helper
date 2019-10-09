@@ -69,7 +69,7 @@
         </div>
         <button
           class="btn btn-info"
-          :disabled="isProcessing || isEmpty || duplicated"
+          :disabled="isProcessing || isEmptyFormInputs || englishDuplicated"
         >
           Submit
         </button>
@@ -210,7 +210,11 @@
           };
         },
         computed: {
+          /**
+           * 원본 사전에 대해 키워드 필터링을 합니다. 검색 대상은 원문-영어
+           */
           filtered: function() {
+            // 입력값이 없으면 필터링 해제
             if (this.english.trim().length == 0) return this.dics;
             var result = this.dics.filter(dic => {
               return dic.english
@@ -220,12 +224,18 @@
 
             return result;
           },
-          isEmpty: function() {
+          /**
+           * 폼의 입력값이 비어있는지 확인
+           */
+          isEmptyFormInputs: function() {
             return (
               this.english.trim().length == 0 || this.korean.trim().length == 0
             );
           },
-          duplicated: function() {
+          /**
+           * 현재 입력한 영어원문의 키워드가 사전에 이미 존재하는지 확인
+           */
+          englishDuplicated: function() {
             if (this.english.trim().length > 0) {
               return this.dics.some(e => {
                 return (
@@ -238,7 +248,9 @@
           },
         },
         methods: {
-          // 사전 데이터를 가져옴
+          /**
+           * 서버에서 사전 데이터를 가져옴
+           */
           fetchData: async function() {
             try {
               const response = await axios.get(
@@ -255,14 +267,6 @@
                   return response.data[key];
                 })
                 .reverse();
-
-              // sort. 나중을 위해 남겨둠
-              /*this.dics.sort((a, b) => {
-                if (a.english < b.english) return -1;
-                if (a.english > b.english) return 1;
-                return 0;
-              });*/
-              // firebase 쿼리는 order 정렬을 못하므로 직접 뒤집어줌
             } catch (err) {
               console.log(err);
             }
