@@ -100,7 +100,7 @@ function init() {
       }
 
       $('.card-area').prepend(
-        `<h1 style='background-color:yellow; color:red;'>${addressElement.innerText}</h1>`,
+        `<h1 style='background-color:#ee9; color:#c00;'>${addressElement.innerText}</h1>`,
       );
     }
   }
