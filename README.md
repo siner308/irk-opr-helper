@@ -66,6 +66,9 @@ OPR Tools 코드를 기반으로 제작되었습니다
 4. 수 초 후에 포털 신청건의 주소가 '대한민국' 이 앞으로 오며 영어로 된 주소가 한글로 변하면 설치에 성공한 것입니다
 5. 플러그인 자동 업데이트 주기가 굉장히 느린걸로 파악되고 있습니다. TamperMonkey 설정에 들어가서 자동업데이트 주기를 빠르게 바꿔주세요
 
+<img src='/public/image/tempermonkey-dashboard.png' style='border:1px solid red;'>
+<img src='/public/image/tampermonkey-settings.png' style='border:1px solid red;'>
+
 ### 버그제보
 코드네임 HawkBro로 연락 주십시오. 인스턴트 메신저로만 연락을 받으니 연락 수단이 없으신 분들은 근처 유저를 수소문 하세요.
 
