@@ -1,16 +1,10 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.0.003
+// @version         1.0.005
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
-// @match           https://opr.ingress.com/?login=true
-// @match           https://opr.ingress.com/recon
-// @match           https://opr.ingress.com/help
-// @match           https://opr.ingress.com/faq
-// @match           https://opr.ingress.com/guide
-// @match           https://opr.ingress.com/settings
-// @match           https://opr.ingress.com/upgrades*
+// @match           https://wayfarer.nianticlabs.com/review
 // @grant           unsafeWindow
 // @grant           GM_notification
 // @grant           GM_addStyle
@@ -87,12 +81,14 @@ function init() {
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
       const subController = w.$scope(subMissionDiv).subCtrl;
 
-      $('span[ng-bind="subCtrl.pageData.streetAddress"]').unwrap();
+      /*$(
+        'span[ng-show="!subCtrl.imageDate && subCtrl.pageData.streetAddress"]',
+      ).unwrap();*/
       /**
        * @type Element
        */
       const addressElement = w.document.querySelector(
-        'span[ng-bind="subCtrl.pageData.streetAddress"]',
+        'span[ng-show="!subCtrl.imageDate && subCtrl.pageData.streetAddress"]',
       );
 
       const addressReverse = parseAddress(addressElement).join(' ');
@@ -102,6 +98,10 @@ function init() {
       } catch (err) {
         addressElement.innerText = addressReverse;
       }
+
+      $('.card-area').prepend(
+        `<h1 style='background-color:#ee9; color:#c00;'>${addressElement.innerText}</h1>`,
+      );
     }
   }
 
@@ -131,7 +131,7 @@ function init() {
     /**
      * @type String
      */
-    let address = element.innerText;
+    let address = element.innerText.replace('도로명 주소:', '');
     let splitted = address.replace('South Korea', '대한민국').split(/, | /);
     splitted = splitted.filter(e => {
       return e != '';
