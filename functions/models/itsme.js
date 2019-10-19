@@ -12,6 +12,8 @@ async function search(name, x, y, codename) {
     var fetched = await searched.once('value');
     fetched = fetched.val();
 
+    if (fetched == null) return null;
+
     // 연관 오브젝트를 배열로 변환, 키값은 property 로 변환
     var result = [];
     Object.keys(fetched).map((key, i, a) => {
