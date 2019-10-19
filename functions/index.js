@@ -12,6 +12,7 @@ admin.initializeApp({
 
 // #region 라우터 Import
 var apiDicRouter = require('./controllers/api/dic');
+var apiItsmeRouter = require('./controllers/api/itsme');
 // #endregion
 
 // #region Express 초기화
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // #region router 정의
 app.use('/api', apiDicRouter);
+app.use('/api', apiItsmeRouter);
 // #endregion
 
 // Firebase Hoasting 에서 Request 를 받게 하기 위함
