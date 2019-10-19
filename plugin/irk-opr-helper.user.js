@@ -105,6 +105,31 @@ function init() {
       $('.card-area').prepend(
         `<h1 style='background-color:#ee9; color:#c00;'>${addressElement.innerText}</h1>`,
       );
+
+      const watcher = setInterval(async () => {
+        if (subController.pageData != null) {
+          clearInterval(watcher);
+
+          try {
+            var itsme = await itsMe(
+              subController.pageData.title,
+              subController.pageData.lng,
+              subController.pageData.lat,
+              null,
+            );
+
+            if (itsme.success === true && itsme.data != null) {
+              $('.card-area').prepend(
+                '<h1 style="background-color:#9ee; color:#0c0;">접니다!!! - ' +
+                  itsme.data[0].creator +
+                  '</h1>',
+              );
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }, 100);
     }
 
     if (nomiDiv !== null && w.$scope(nomiDiv).nomCtrl !== null) {
@@ -157,16 +182,7 @@ function init() {
         var imageurl = $('img.nomination-photo').attr('src');
 
         try {
-          var result = await $.ajax({
-            type: 'get',
-            url: 'https://irk-opr-helper.web.app/api/itsme',
-            data: {
-              name: newname.trim(),
-              x: s3[1],
-              y: s3[0],
-              codename: this.codename,
-            },
-          });
+          var result = await itsMe(newname.trim(), s3[1], s3[0], this.codename);
 
           if (result.success == false) throw null;
           $('[name=itsme-submit]').remove();
@@ -224,6 +240,23 @@ function init() {
       return result.data;
     } catch (error) {
       return word + '<br />불러오기에 실패하였습니다';
+    }
+  }
+
+  async function itsMe(name, x, y, codename) {
+    try {
+      return await $.ajax({
+        type: 'get',
+        url: 'https://irk-opr-helper.web.app/api/itsme',
+        data: {
+          name: name,
+          x: x,
+          y: y,
+          codename: codename,
+        },
+      });
+    } catch (e) {
+      return { success: false, message: null, data: e };
     }
   }
 
