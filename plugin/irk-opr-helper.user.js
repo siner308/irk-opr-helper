@@ -5,6 +5,7 @@
 // @author          HawkBro
 // @match           https://opr.ingress.com/
 // @match           https://wayfarer.nianticlabs.com/review
+// @match           https://wayfarer.nianticlabs.com/nominations
 // @grant           unsafeWindow
 // @grant           GM_notification
 // @grant           GM_addStyle
@@ -16,6 +17,7 @@
 /* globals unsafeWindow, angular */
 
 const w = typeof unsafeWindow === 'undefined' ? window : unsafeWindow;
+var nomName = '';
 
 setTimeout(() => {
   init();
@@ -76,6 +78,7 @@ function init() {
 
   async function initScript() {
     const subMissionDiv = w.document.getElementById('NewSubmissionController');
+    const nomiDiv = w.document.querySelector('.nominations-controller');
 
     // check if subCtrl exists (should exists if we're on /recon)
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
@@ -103,6 +106,32 @@ function init() {
         `<h1 style='background-color:#ee9; color:#c00;'>${addressElement.innerText}</h1>`,
       );
     }
+
+    if (nomiDiv !== null && w.$scope(nomiDiv).subCtrl !== null) {
+      initItsMe();
+    }
+  }
+
+  function initItsMe() {
+    setInterval(() => {
+      var el = $('div.nomination-detail > div.nomination-title');
+      var newname = el.text();
+      if (nomName != newname && newname != null && newname.trim().length > 0) {
+        nomName = newname.trim();
+
+        await $.ajax({
+          type: 'post',
+          url: 'https://irk-opr-helper.web.app/api/itsme',
+          data: {
+            name: newname.trim(),
+            x: 0,
+            y: 0,
+            image: '',
+            codename: ''
+          }
+        })
+      }
+    }, 500);
   }
 
   async function searchDic(word) {
