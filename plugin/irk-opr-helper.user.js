@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.0.005
+// @version         1.1.000
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -107,29 +107,104 @@ function init() {
       );
     }
 
-    if (nomiDiv !== null && w.$scope(nomiDiv).subCtrl !== null) {
-      initItsMe();
+    if (nomiDiv !== null && w.$scope(nomiDiv).nomCtrl !== null) {
+      initItsMe(w.$scope(nomiDiv).nomCtrl);
     }
   }
 
-  function initItsMe() {
-    setInterval(() => {
+  this.codename = '';
+
+  function initItsMe(nomCtrl) {
+    var codename = getCookie('codename');
+
+    if (codename === undefined) {
+      while (true) {
+        var newname = prompt(
+          '코드네임을 입력해 주시면 "접니다!" 기능을 사용할 수 있습니다',
+        );
+        if (newname == null) break;
+        if (newname.trim() == '') continue;
+        else {
+          setCookie('codename', newname, 100000);
+          this.codename = newname;
+          break;
+        }
+      }
+    } else {
+      this.codename = codename;
+    }
+
+    if (this.codename == undefined || this.codename.trim() == '') return;
+
+    setInterval(async () => {
+      if (nomCtrl.canModify(nomCtrl.currentNomination) == false) return;
+
       var el = $('div.nomination-detail > div.nomination-title');
       var newname = el.text();
-      if (nomName != newname && newname != null && newname.trim().length > 0) {
+      if (
+        newname != null &&
+        nomName != newname.trim() &&
+        newname.trim().length > 0 &&
+        $('a[rel=noopener]').length > 0
+      ) {
         nomName = newname.trim();
 
-        await $.ajax({
-          type: 'post',
-          url: 'https://irk-opr-helper.web.app/api/itsme',
-          data: {
-            name: newname.trim(),
-            x: 0,
-            y: 0,
-            image: '',
-            codename: ''
+        var href = $('a[rel=noopener]')[0].href;
+        var s1 = href.split('=')[1];
+        var s2 = s1.split('&')[0];
+        var s3 = s2.split(',');
+
+        var imageurl = $('img.nomination-photo').attr('src');
+
+        try {
+          var result = await $.ajax({
+            type: 'get',
+            url: 'https://irk-opr-helper.web.app/api/itsme',
+            data: {
+              name: newname.trim(),
+              x: s3[1],
+              y: s3[0],
+              codename: this.codename,
+            },
+          });
+
+          if (result.success == false) throw null;
+          $('[name=itsme-submit]').remove();
+          if (result.data == null) {
+            $('.nomination-header-buttons .nom-buttons').append(`
+            <button style="width:200px;" class="button-secondary button-upgrade" id="itsme-submit" name="itsme-submit">${newname.trim()}<br />접니다! 에 등록</button>
+            `);
+
+            $('#itsme-submit').click(async () => {
+              var itsme_submit = await $.ajax({
+                type: 'post',
+                url: 'https://irk-opr-helper.web.app/api/itsme',
+                data: {
+                  name: newname.trim(),
+                  x: s3[1],
+                  y: s3[0],
+                  image: imageurl,
+                  codename: getCookie('codename'),
+                },
+              });
+
+              if (itsme_submit.success == true) {
+                alert('정상 등록되었습니다');
+                $('[name=itsme-submit]')
+                  .text('등록 됨')
+                  .attr('disabled', true);
+              }
+            });
+          } else {
+            $('.nomination-header-buttons .nom-buttons').append(`
+            <button class="button-secondary disabled-button" name="itsme-submit" style="width:200px;" disabled>
+            ${newname.trim()}<br />
+            접니다! 등록되어있음
+            </button>
+            `);
           }
-        })
+          //return result.data;
+        } catch (e) {}
       }
     }, 500);
   }
@@ -169,4 +244,37 @@ function init() {
 
     return splitted;
   }
+}
+
+function getCookie(name) {
+  // 변수를 선언한다.
+  var cookies = document.cookie.split(';');
+
+  // 쿠키를 추출한다.
+  var searched = cookies.find(e => {
+    return e.split('=')[0].trim() == name;
+  });
+
+  if (searched == undefined) return undefined;
+  var result = decodeURIComponent(searched.replace(name + '=', ''));
+
+  return result;
+  /*for (var i in cookies) {
+    if (cookies[i].search(name) != -1) {
+      alert(decodeURIComponent(cookies[i].replace(name + '=', '')));
+    }
+  }*/
+}
+
+function setCookie(name, value, day) {
+  // 변수를 선언한다.
+  var date = new Date();
+  date.setDate(date.getDate() + day);
+
+  var willCookie = '';
+  willCookie += name.trim() + '=' + encodeURIComponent(value) + ';';
+  willCookie += 'Expires=' + date.toUTCString() + '';
+
+  // 쿠키에 넣습니다.
+  document.cookie = willCookie;
 }
