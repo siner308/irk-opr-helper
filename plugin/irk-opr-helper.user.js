@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.1.001
+// @version         1.1.002
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -200,7 +200,7 @@ function init() {
                   x: s3[1],
                   y: s3[0],
                   image: imageurl,
-                  codename: getCookie('codename'),
+                  codename: getCookie('codename').trim(),
                 },
               });
 
@@ -291,7 +291,7 @@ function getCookie(name) {
   if (searched == undefined) return undefined;
   var result = decodeURIComponent(searched.replace(name + '=', ''));
 
-  return result;
+  return result.trim();
   /*for (var i in cookies) {
     if (cookies[i].search(name) != -1) {
       alert(decodeURIComponent(cookies[i].replace(name + '=', '')));
