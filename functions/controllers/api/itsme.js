@@ -7,10 +7,10 @@ var model = require('../../models/itsme');
 // #region Public functions
 
 router.get('/itsme', async (req, res, next) => {
-  var name = req.query.name;
-  var x = req.query.x;
-  var y = req.query.y;
-  var codename = req.query.codename;
+  var name = req.query.name.trim();
+  var x = req.query.x.trim();
+  var y = req.query.y.trim();
+  var codename = req.query.codename.trim();
 
   // 코드네임은 유효성 검사 조건에 넣지 않음. 코드네임을 넣지 않으면 누가 올렸는지 구분 없이 가져오기 위함
   // 심사에 떴을 때는 코드네임 구분 없이 가져 오고
@@ -27,11 +27,11 @@ router.get('/itsme', async (req, res, next) => {
  * 사전 추가 컨트롤러
  */
 router.post('/itsme', async (req, res, next) => {
-  var name = req.body.name;
-  var x = req.body.x;
-  var y = req.body.y;
-  var image = req.body.image;
-  var codename = req.body.codename;
+  var name = req.body.name.trim();
+  var x = req.body.x.trim();
+  var y = req.body.y.trim();
+  var image = req.body.image.trim();
+  var codename = req.body.codename.trim();
 
   if (isEmpty(name))
     return res.json(new ApiResponse(false, 'NAME IS EMPTY', null));
