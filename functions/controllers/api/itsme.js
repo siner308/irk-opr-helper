@@ -6,18 +6,21 @@ var model = require('../../models/itsme');
 
 // #region Public functions
 
-/**
- * 영어로 한글을 가져옴, 띄어쓰기 단위로 각각 번역해서 가져옴
- */
 router.get('/itsme', async (req, res, next) => {
   var name = req.query.name;
   var x = req.query.x;
   var y = req.query.y;
+  var codename = req.query.codename;
 
+  // 코드네임은 유효성 검사 조건에 넣지 않음. 코드네임을 넣지 않으면 누가 올렸는지 구분 없이 가져오기 위함
+  // 심사에 떴을 때는 코드네임 구분 없이 가져 오고
+  // 내 신청건을 등록 할 때는 코드네임을 넣어서 내 신청건 임을 구분 해야 함
   if (isEmpty(name) || isEmpty(x) || isEmpty(y))
     return res.json(new ApiResponse(false, 'PARAMETER IS INSUFFICIENT', null));
 
-  return res.json(new ApiResponse(true, null, await model.search(name, x, y)));
+  return res.json(
+    new ApiResponse(true, null, await model.search(name, x, y, codename)),
+  );
 });
 
 /**

@@ -6,20 +6,28 @@ var ref = db.ref('itsme');
 
 // #region Public functions
 
-async function search(name, x, y) {
+async function search(name, x, y, codename) {
   try {
     const searched = await ref.orderByChild('name').equalTo(name);
     var fetched = await searched.once('value');
     fetched = fetched.val();
 
+    // 연관 오브젝트를 배열로 변환, 키값은 property 로 변환
     var result = [];
     Object.keys(fetched).map((key, i, a) => {
       result.push(fetched[key]);
     });
 
+    // GPS 좌표로 필터링
     result = result.filter((v, i, a) => {
       return v.x == x && v.y == y;
     });
+
+    // 코드네임이 있으면 코드네임도 필터링
+    if (isEmpty(codename) === false)
+      result = result.filter((v, i, a) => {
+        return v.creator.toLowerCase() == codename.toLowerCase();
+      });
 
     return result;
   } catch (err) {
@@ -30,9 +38,6 @@ module.exports.search = search;
 
 /**
  * 새 Entity를 등록
- * @param { string } english 원문
- * @param { string } korean 번역한 한글
- * @param { string } codename 등록자 코드네임
  * @returns { ApiResponse }
  */
 async function add(name, x, y, image, codename) {
