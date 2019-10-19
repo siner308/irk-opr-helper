@@ -6,6 +6,11 @@
       ".read": true,
       ".write": true,
       ".indexOn": ["english", "createtime"]
+    },
+    "itsme": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["createtime"]
     }
   }
 }
