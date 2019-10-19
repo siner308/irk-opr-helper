@@ -51,6 +51,14 @@ router.post('/itsme', async (req, res, next) => {
   res.json(responseBody);
 });
 
+/*
+router.get('/itsme/test', async (q, s, n) => {
+  try {
+    await model.test();
+  } catch (e) {}
+  s.json(new ApiResponse(true, '', ''));
+});*/
+
 // #endregion
 
 // #region Private funcs
