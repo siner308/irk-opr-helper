@@ -28,7 +28,7 @@ async function search(name, x, y, codename) {
     // 코드네임이 있으면 코드네임도 필터링
     if (isEmpty(codename) === false)
       result = result.filter((v, i, a) => {
-        return v.creator.toLowerCase() == codename.toLowerCase();
+        return v.codenameLower == codename.toLowerCase();
       });
 
     return result;
@@ -50,6 +50,7 @@ async function add(name, x, y, image, codename) {
     image: image,
     creator: codename,
     updater: codename,
+    codenameLower: codename.toLowerCase(),
     createtime: moment()
       .tz('Asia/Seoul')
       .format('YYYY-MM-DD HH:mm'),
@@ -70,6 +71,34 @@ async function add(name, x, y, image, codename) {
   }
 }
 module.exports.add = add;
+
+/*async function test() {
+  try {
+    const searched = await ref.orderByChild('name');
+    var fetched = await searched.once('value');
+    fetched = fetched.val();
+
+    if (fetched == null) return null;
+
+    Object.keys(fetched).map(async (key, i, a) => {
+      console.log(fetched[key].creator);
+
+      var trimed = fetched[key].creator.trim();
+
+      const doc = ref.child(key);
+      var newdoc = {
+        creator: trimed,
+        updater: fetched[key].updater.trim(),
+        codenameLower: trimed.toLowerCase(),
+      };
+
+      await doc.update(newdoc);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+module.exports.test = test;*/
 
 // #endregion
 
