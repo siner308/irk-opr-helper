@@ -6,17 +6,22 @@ var ref = db.ref('itsme');
 
 // #region Public functions
 
-/**
- * 사전 검색
- * @param { string } english
- */
-async function search(english) {
+async function search(name, x, y) {
   try {
-    const searched = await ref
-      .orderByChild('english')
-      .equalTo(english.toLowerCase());
-    const fetched = await searched.once('value');
-    return fetched.val();
+    const searched = await ref.orderByChild('name').equalTo(name);
+    var fetched = await searched.once('value');
+    fetched = fetched.val();
+
+    var result = [];
+    Object.keys(fetched).map((key, i, a) => {
+      result.push(fetched[key]);
+    });
+
+    result = result.filter((v, i, a) => {
+      return v.x == x && v.y == y;
+    });
+
+    return result;
   } catch (err) {
     throw err;
   }

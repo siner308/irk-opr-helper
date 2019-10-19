@@ -7,6 +7,20 @@ var model = require('../../models/itsme');
 // #region Public functions
 
 /**
+ * 영어로 한글을 가져옴, 띄어쓰기 단위로 각각 번역해서 가져옴
+ */
+router.get('/itsme', async (req, res, next) => {
+  var name = req.query.name;
+  var x = req.query.x;
+  var y = req.query.y;
+
+  if (isEmpty(name) || isEmpty(x) || isEmpty(y))
+    return res.json(new ApiResponse(false, 'PARAMETER IS INSUFFICIENT', null));
+
+  return res.json(new ApiResponse(true, null, await model.search(name, x, y)));
+});
+
+/**
  * 사전 추가 컨트롤러
  */
 router.post('/itsme', async (req, res, next) => {
