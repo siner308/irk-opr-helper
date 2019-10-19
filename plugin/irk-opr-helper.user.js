@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.1.000
+// @version         1.1.001
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -186,7 +186,7 @@ function init() {
 
           if (result.success == false) throw null;
           $('[name=itsme-submit]').remove();
-          if (result.data == null) {
+          if (result.data == null || result.data.length == 0) {
             $('.nomination-header-buttons .nom-buttons').append(`
             <button style="width:200px;" class="button-secondary button-upgrade" id="itsme-submit" name="itsme-submit">${newname.trim()}<br />접니다! 에 등록</button>
             `);
