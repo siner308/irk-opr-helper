@@ -10,7 +10,7 @@
     "itsme": {
       ".read": true,
       ".write": true,
-      ".indexOn": ["createtime"]
+      ".indexOn": ["name", "createtime"]
     }
   }
 }
