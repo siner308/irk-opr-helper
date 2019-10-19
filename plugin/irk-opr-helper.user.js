@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.1.002
+// @version         1.1.004
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -84,31 +84,23 @@ function init() {
     if (subMissionDiv !== null && w.$scope(subMissionDiv).subCtrl !== null) {
       const subController = w.$scope(subMissionDiv).subCtrl;
 
-      /*$(
-        'span[ng-show="!subCtrl.imageDate && subCtrl.pageData.streetAddress"]',
-      ).unwrap();*/
-      /**
-       * @type Element
-       */
-      const addressElement = w.document.querySelector(
-        'span[ng-show="!subCtrl.imageDate && subCtrl.pageData.streetAddress"]',
-      );
-
-      const addressReverse = parseAddress(addressElement).join(' ');
-      try {
-        var x = await searchDic(addressReverse);
-        addressElement.innerText = x;
-      } catch (err) {
-        addressElement.innerText = addressReverse;
-      }
-
-      $('.card-area').prepend(
-        `<h1 style='background-color:#ee9; color:#c00;'>${addressElement.innerText}</h1>`,
-      );
-
       const watcher = setInterval(async () => {
         if (subController.pageData != null) {
           clearInterval(watcher);
+
+          const addressReverse = parseAddress(
+            subController.pageData.streetAddress,
+          ).join(' ');
+
+          var translatedAddress = addressReverse;
+
+          try {
+            translatedAddress = await searchDic(addressReverse);
+          } catch (err) {}
+
+          $('.card-area').prepend(
+            `<h1 style='background-color:#ee9; color:#c00;'>${translatedAddress}</h1>`,
+          );
 
           try {
             var itsme = await itsMe(
@@ -260,15 +252,8 @@ function init() {
     }
   }
 
-  /**
-   * 주소 엘리먼트 파싱
-   * @param { Element } element
-   */
-  function parseAddress(element) {
-    /**
-     * @type String
-     */
-    let address = element.innerText.replace('도로명 주소:', '');
+  function parseAddress(address) {
+    address = address.replace('도로명 주소:', '');
     let splitted = address.replace('South Korea', '대한민국').split(/, | /);
     splitted = splitted.filter(e => {
       return e != '';
