@@ -30,12 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         uid: user.uid,
       };
       x = window.user;
-      console.log(x);
       window.document.querySelector(
         '#auth',
       ).innerHTML = `<a class="nav-link" href="javascript:signout();">${x.email} - 로그아웃</a>`;
     } else {
-      console.log('not auth');
       window.user = null;
       window.document.querySelector(
         '#auth',
@@ -64,7 +62,7 @@ function signin() {
       location.reload();
     })
     .catch(function(err) {
-      console.log(err);
+      alert(err.message);
     });
 }
 
