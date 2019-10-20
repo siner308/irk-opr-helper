@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            IRK OPR Helper
-// @version         1.1.004
+// @version         1.1.005
 // @description     OPR Helper For IRK users
 // @author          HawkBro
 // @match           https://opr.ingress.com/
@@ -88,6 +88,16 @@ function init() {
         if (subController.pageData != null) {
           clearInterval(watcher);
 
+          $('.card-area').prepend(
+            `<span>
+            <a target="_blank" href="https://map.naver.com/?lat=${subController.pageData.lat}&lng=${subController.pageData.lng}">
+            <button>NAVER MAP</button></a>
+            <a target="_blank" href="https://intel.ingress.com/intel?ll=${subController.pageData.lat},${subController.pageData.lng}&z=17">
+            <button>INTEL MAP</button></a>
+            </span>
+            `,
+          );
+
           const addressReverse = parseAddress(
             subController.pageData.streetAddress,
           ).join(' ');
@@ -174,16 +184,21 @@ function init() {
         var imageurl = $('img.nomination-photo').attr('src');
 
         try {
+          $('[name=itsme-submit]').remove();
+
           var result = await itsMe(newname.trim(), s3[1], s3[0], this.codename);
 
           if (result.success == false) throw null;
-          $('[name=itsme-submit]').remove();
+
           if (result.data == null || result.data.length == 0) {
             $('.nomination-header-buttons .nom-buttons').append(`
             <button style="width:200px;" class="button-secondary button-upgrade" id="itsme-submit" name="itsme-submit">${newname.trim()}<br />접니다! 에 등록</button>
             `);
 
             $('#itsme-submit').click(async () => {
+              $('#itsme-submit')
+                .text('등록 중')
+                .attr('disabled', true);
               var itsme_submit = await $.ajax({
                 type: 'post',
                 url: 'https://irk-opr-helper.web.app/api/itsme',
@@ -192,7 +207,7 @@ function init() {
                   x: s3[1],
                   y: s3[0],
                   image: imageurl,
-                  codename: getCookie('codename'),
+                  codename: getCookie('codename').trim(),
                 },
               });
 
@@ -276,7 +291,7 @@ function getCookie(name) {
   if (searched == undefined) return undefined;
   var result = decodeURIComponent(searched.replace(name + '=', ''));
 
-  return result;
+  return result.trim();
   /*for (var i in cookies) {
     if (cookies[i].search(name) != -1) {
       alert(decodeURIComponent(cookies[i].replace(name + '=', '')));
