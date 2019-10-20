@@ -88,6 +88,16 @@ function init() {
         if (subController.pageData != null) {
           clearInterval(watcher);
 
+          $('.card-area').prepend(
+            `<span>
+            <a target="_blank" href="https://map.naver.com/?lat=${subController.pageData.lat}&lng=${subController.pageData.lng}">
+            <button>NAVER MAP</button></a>
+            <a target="_blank" href="https://intel.ingress.com/intel?ll=${subController.pageData.lat},${subController.pageData.lng}&z=17">
+            <button>INTEL MAP</button></a>
+            </span>
+            `,
+          );
+
           const addressReverse = parseAddress(
             subController.pageData.streetAddress,
           ).join(' ');
