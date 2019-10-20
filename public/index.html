@@ -24,7 +24,7 @@
 
     <!-- my style/scripts -->
     <script src="/js/inc.js?1"></script>
-    <script src="/js/auth.js?1"></script>
+    <script src="/js/auth.js?4"></script>
 
     <link rel="stylesheet" href="/style/style.css" />
     <link rel="stylesheet" href="/style/glyphicon.css" />
@@ -42,10 +42,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/itsme.html">접니다</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="test"></a>
+        </li>
       </ul>
-      <ul class="navbar-nav mr-auro">
-        <li class="nav-item" id="auth"></li>
-      </ul>
+      <ul class="navbar-nav mr-auro" id="auth"></ul>
     </nav>
     <div id="app" style="margin-top:2.5em;">
       <h1>
@@ -240,5 +241,16 @@
     </div>
 
     <script src="/js/vue/index.js"></script>
+    <script>
+      (async function a() {
+        var response = await axios.get('/api/key', {
+          headers: {
+            Authorization: 'Bearer ' + getCookie('__session'),
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log(response);
+      })();
+    </script>
   </body>
 </html>

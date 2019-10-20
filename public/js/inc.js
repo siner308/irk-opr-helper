@@ -1,21 +1,6 @@
 function getCookie(name) {
-  // 변수를 선언한다.
-  var cookies = document.cookie.split(';');
-
-  // 쿠키를 추출한다.
-  var searched = cookies.find(e => {
-    return e.split('=')[0] == name;
-  });
-
-  if (searched == undefined) return undefined;
-  var result = decodeURIComponent(searched.replace(name + '=', ''));
-
-  return result;
-  /*for (var i in cookies) {
-    if (cookies[i].search(name) != -1) {
-      alert(decodeURIComponent(cookies[i].replace(name + '=', '')));
-    }
-  }*/
+  var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
 }
 
 function setCookie(name, value, day) {
@@ -24,9 +9,16 @@ function setCookie(name, value, day) {
   date.setDate(date.getDate() + day);
 
   var willCookie = '';
-  willCookie += name + '=' + encodeURIComponent(value) + ';';
+  willCookie += name.trim() + '=' + encodeURIComponent(value) + ';';
   willCookie += 'Expires=' + date.toUTCString() + '';
 
   // 쿠키에 넣습니다.
   document.cookie = willCookie;
+}
+
+function deleteCookie(cname) {
+  var d = new Date(); //Create an date object
+  d.setTime(d.getTime() - 1000 * 60 * 60 * 24); //Set the time to the past. 1000 milliseonds = 1 second
+  var expires = 'expires=' + d.toGMTString(); //Compose the expirartion date
+  window.document.cookie = cname + '=' + '; ' + expires; //Set the cookie with name and the expiration date
 }

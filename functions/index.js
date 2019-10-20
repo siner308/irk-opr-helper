@@ -4,15 +4,20 @@ const express = require('express');
 
 // #region Firebase 초기화
 var serviceAccount = require('./key/pk.json');
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://irk-opr-helper.firebaseio.com',
 });
+
 // #endregion
 
 // #region 라우터 Import
 var apiDicRouter = require('./controllers/api/dic');
 var apiItsmeRouter = require('./controllers/api/itsme');
+var apiKeyRouter = require('./controllers/api/key');
+
+var apiAuthRouter = require('./controllers/middle/auth');
 // #endregion
 
 // #region Express 초기화
@@ -24,6 +29,9 @@ app.use(express.urlencoded({ extended: false }));
 // #region router 정의
 app.use('/api', apiDicRouter);
 app.use('/api', apiItsmeRouter);
+
+app.use('/api/key', apiAuthRouter);
+app.use('/api', apiKeyRouter);
 // #endregion
 
 // Firebase Hoasting 에서 Request 를 받게 하기 위함

@@ -14,56 +14,87 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 var provider = new firebase.auth.GoogleAuthProvider();
-
 provider.addScope('https://www.googleapis.com/auth/firebase.readonly');
 firebase.auth().languageCode = 'kr';
-
-window.user = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      window.user = {
-        name: user.displayName,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        uid: user.uid,
-      };
-      x = window.user;
-      window.document.querySelector(
-        '#auth',
-      ).innerHTML = `<a class="nav-link" href="javascript:signout();">${x.email} - 로그아웃</a>`;
+      window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:register();">키 등록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signout();">로그아웃</a>
+        </li>
+      `;
     } else {
       window.user = null;
-      window.document.querySelector(
-        '#auth',
-      ).innerHTML = `<a class="nav-link" href="javascript:signin();">로그인</a>`;
+      window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signin();">로그인</a>
+        </li>
+      `;
     }
   });
 });
 
-function signout() {
-  firebase
-    .auth()
-    .signOut()
-    .then(function() {
-      location.reload();
-    })
-    .catch(function(error) {
-      // An error happened.
-    });
+async function signout() {
+  await firebase.auth().signOut();
+  //await axios.post('/api/session/logout');
+
+  deleteCookie('__session');
+  location.reload();
 }
 
-function signin() {
-  firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then(function(result) {
-      location.reload();
-    })
-    .catch(function(err) {
-      alert(err.message);
+async function signin() {
+  try {
+    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  } catch (err) {
+    alert(err.message);
+    console.log(err.message);
+  }
+
+  try {
+    var result = await firebase.auth().signInWithPopup(provider);
+    user = result.user;
+    console.log('google login', result);
+  } catch (err) {
+    console.log(`google login`, err);
+    return;
+  }
+
+  try {
+    var token = await firebase.auth().currentUser.getIdToken();
+    setCookie('__session', token, 100000);
+  } catch (err) {
+    console.log('token', err);
+    return;
+  }
+
+  /*
+  idToken = result.credential.idToken;
+  csrfToken = getCookie('csrfToken');
+
+  try {
+    const result = await axios.post('/api/session/login', {
+      idToken: idToken,
+      csrfToken: csrfToken,
     });
+    console.log('session - ' + result);
+  } catch (err) {
+    console.log('session', err);
+  }*/
+}
+
+async function registerKey() {
+  var key = prompt('제작자에게 발급받은 키를 입력하세요');
+
+  if (key === false) return;
+
+  const response = await axios.post('/api/key', {
+    key: key,
+  });
 }
 
 /**
