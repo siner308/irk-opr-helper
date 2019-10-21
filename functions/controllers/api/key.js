@@ -8,7 +8,7 @@ var ApiResponse = require('../../models/class/apiresponse');
 // #region Public functions
 
 router.get('/key', async (req, res, next) => {
-  res.json(new ApiResponse(true, null, '테스트 메세지 - 권한 있음'));
+  res.json(new ApiResponse(true, null, req.user.uid));
   //var token = req.body.token;
   /*
   console.log(token);
