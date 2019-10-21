@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser')();
 
+const admin = require('firebase-admin');
+try {
+  admin.initializeApp();
+} catch (e) {}
+
 var ApiResponse = require('../../models/class/apiresponse');
 
 // #region Public functions
@@ -17,7 +22,16 @@ router.use(async (req, res, next) => {
     return;
   }
 
-  next();
+  let token = req.headers.authorization.split(' ')[1];
+  try {
+    let decoded = await admin.auth().verifyIdToken(token);
+    req.user = decoded;
+    next();
+    return;
+  } catch (err) {
+    res.status(403).json(new ApiResponse(false, 'Unauthorized', null));
+    return;
+  }
 });
 
 module.exports = router;
