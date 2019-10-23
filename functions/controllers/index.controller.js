@@ -4,7 +4,7 @@ var router = express.Router();
 // #region Public functions
 
 router.get('/', (req, res, next) => {
-  res.renderVue('dic.vue', {
+  res.render('dic', {
     pagename: 'dic',
   });
 });

@@ -29,13 +29,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // #endregion
 
+app.set('view engine', 'ejs');
+app.engine('ejs', require('ejs').__express);
 
-//app.set('view engine', 'ejs');
-//app.engine('ejs', require('ejs').__express);
-
-//app.set('layout', 'inc/_layout');
-//app.set('layout extractScripts', true);
-//app.use(require('express-ejs-layouts'));
+app.set('layout', 'inc/_layout');
+app.set('layout extractScripts', true);
+app.use(require('express-ejs-layouts'));
 
 // #endregion
 
