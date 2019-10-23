@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
+const path = require('path');
 
 // #region Firebase 초기화
 var serviceAccount = require('./key/pk.json');
@@ -13,6 +14,8 @@ admin.initializeApp({
 // #endregion
 
 // #region 라우터 Import
+var router = require('./controllers/index.controller');
+
 var apiDicRouter = require('./controllers/api/dic');
 var apiItsmeRouter = require('./controllers/api/itsme');
 var apiKeyRouter = require('./controllers/api/key');
@@ -26,7 +29,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // #endregion
 
+
+//app.set('view engine', 'ejs');
+//app.engine('ejs', require('ejs').__express);
+
+//app.set('layout', 'inc/_layout');
+//app.set('layout extractScripts', true);
+//app.use(require('express-ejs-layouts'));
+
+// #endregion
+
 // #region router 정의
+app.use('/', router);
 app.use('/api', apiDicRouter);
 app.use('/api', apiItsmeRouter);
 

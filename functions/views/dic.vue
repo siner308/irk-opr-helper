@@ -1,0 +1,199 @@
+<template>
+  <div style="margin-top:2.5em;">
+    <h1>
+      번역 사전
+      <span style="font-size:0.5em;">Made By [HawkBro@RES/Incheon]</span>
+    </h1>
+    <div class="alert alert-danger" role="alert">
+      <h3>주의사항</h3>
+      <div>
+        <ul>
+          <li>좌우의 공백은 자동으로 잘려서 입력 됩니다</li>
+          <li>
+            지명 뒤에 행정구역 단위가 나오지 않을 시, 뒤에 임의로 시/군/구/동 을
+            넣지 말아주세요.
+            <br />
+            <small>
+              예를 들면, Ansan -> 안산시 가 있습니다.
+              <br />안산 3동 같이 지명 뒤에 다른 행정 단위가 있는 경우가 있을 수
+              있습니다. 혹은 아파트 이름으로서 나올 수도 있으니 원문 그대로 등록
+              해주시기 바랍니다
+              <br />위 처럼 등록하실 경우, Gyeong-gi Ansan 3-dong Ansan 은 '경기 안산시
+              3동 안산시' 가 되어 버립니다
+              <br />
+            </small>
+          </li>
+          <li>본 사이트와 플러그인의 존재 여부에 대하여 보안에 꼭 주의해 주세요!</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="app">
+      <h2 v-if="codename != null">현재 기여자 - {{ codename }}</h2>
+      <form id="form" v-on:submit.prevent="onSubmit" v-if="codename != null">
+        <div
+          style="position:absolute; z-index:99; left:0px; top:0px; width:100%; height:100%; background-color: rgba(0, 0, 0, 0.2);"
+          v-show="isProcessing"
+        >
+          <img
+            src="/image/loading.gif"
+            style="position:relative; width:8em; height:8em; left:50%; top: 50%; margin-top:-4em; margin-left: -4em;"
+          />
+        </div>
+        <div class="form-group">
+          <label for="english">영어 원문</label>
+          <input
+            type="text"
+            class="form-control"
+            id="english"
+            name="english"
+            placeholder="영어 원문"
+            v-model="english"
+            ref="english"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <label for="korean">번역할 한국어</label>
+          <input
+            type="text"
+            class="form-control"
+            id="korean"
+            name="korean"
+            placeholder="번역할 한국어"
+            v-model="korean"
+            ref="korean"
+            autocomplete="off"
+          />
+        </div>
+        <button
+          class="btn btn-info"
+          :disabled="isProcessing || isEmptyFormInputs || englishDuplicated || isFormInvalid"
+        >Submit</button>
+      </form>
+
+      <div style="height:30px;"></div>
+
+      <table class="table table-striped table-sm" id="dictable">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="text-center" @click="changeSort('english')">
+              원문
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey === 'english' && sortByAsc"
+              ></span>
+              <span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey === 'english' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center" @click="changeSort('korean')">
+              번역
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'korean' && sortByAsc"
+              ></span>
+              <span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'korean' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center" @click="changeSort('creator')">
+              등록/수정
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'creator' && sortByAsc"
+              ></span>
+              <span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'creator' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center" @click="changeSort('createtime')">
+              등록일시
+              <span
+                class="glyphicon glyphicon-arrow-up"
+                v-show="sortkey == 'createtime' && sortByAsc"
+              ></span>
+              <span
+                class="glyphicon glyphicon-arrow-down"
+                v-show="sortkey == 'createtime' && sortByAsc == false"
+              ></span>
+            </th>
+            <th scope="col" class="text-center"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, k) in filtered" :key="row.key" ref="items">
+            <td>
+              <span
+                v-show="!isEditing(row.key, 'english')"
+                @click="startEditing(row.key, k, 'english')"
+              >{{ row.english }}</span>
+              <span v-show="isEditing(row.key, 'english')">
+                <input
+                  name="english"
+                  v-model="row.english"
+                  type="text"
+                  class="form-control input-xxs"
+                  @keyup.enter="applyEdit(row.key, 'english')"
+                  @keyup.esc="cancelEdit(row.key, 'english')"
+                  @blur="cancelEdit(row.key, 'english')"
+                />
+              </span>
+            </td>
+            <td>
+              <span
+                v-show="!isEditing(row.key, 'korean')"
+                @click="startEditing(row.key, k, 'korean')"
+              >{{ row.korean }}</span>
+              <span v-show="isEditing(row.key, 'korean')">
+                <input
+                  name="korean"
+                  v-model="row.korean"
+                  type="text"
+                  class="form-control input-xxs"
+                  @keyup.enter="applyEdit(row.key, 'korean')"
+                  @keyup.esc="cancelEdit(row.key, 'korean')"
+                  @blur="cancelEdit(row.key, 'korean')"
+                />
+              </span>
+            </td>
+            <td class="text-center">
+              <span class="badge badge-info">{{ row.creator }}</span>
+              <span
+                class="badge badge-warning"
+                v-show="row.creator != row.updater"
+              >{{ row.updater }}</span>
+              <span name="key" style="display:none;">{{ row.key }}</span>
+            </td>
+            <td class="text-center">{{ row.createtime }}</td>
+            <td class="text-center">
+              <span
+                :disabled="isProcessing"
+                @click="remove(row)"
+                class="btn btn-sm btn-danger glyphicon glyphicon-trash"
+                style="cursor:pointer;"
+              ></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script src="/js/vue/auth.js"></script>
+<script src="/js/vue/index.js"></script>
+<script>
+(async function a() {
+  var response = await axios.get("/api/key", {
+    headers: {
+      Authorization: "Bearer " + getCookie("__session"),
+      "Content-Type": "application/json"
+    }
+  });
+  //console.log(response);
+})();
+</script>
