@@ -16,11 +16,11 @@ admin.initializeApp({
 // #region 라우터 Import
 var router = require('./controllers/index.controller');
 
-var apiDicRouter = require('./controllers/api/dic');
-var apiItsmeRouter = require('./controllers/api/itsme');
-var apiKeyRouter = require('./controllers/api/key');
+var apiDicRouter = require('./controllers/api/api.dic');
+var apiItsmeRouter = require('./controllers/api/api.itsme');
+var apiKeyRouter = require('./controllers/api/api.key');
 
-var apiAuthRouter = require('./controllers/middle/auth');
+var middleAuth = require('./controllers/middle/middle.auth');
 // #endregion
 
 // #region Express 초기화
@@ -43,7 +43,7 @@ app.use('/', router);
 app.use('/api', apiDicRouter);
 app.use('/api', apiItsmeRouter);
 
-app.use('/api/key', apiAuthRouter);
+app.use('/api/key', middleAuth);
 app.use('/api', apiKeyRouter);
 // #endregion
 

@@ -17,13 +17,34 @@ var provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/firebase.readonly');
 firebase.auth().languageCode = 'kr';
 
-async function signout() {
-  await firebase.auth().signOut();
-  //await axios.post('/api/session/logout');
-
-  deleteCookie('__session');
-  location.reload();
+function saveToken(token) {
+  setCookie('__session', token, 100000);
 }
+
+firebase.auth().onAuthStateChanged(async user => {
+  if (user) {
+    app_auth.email = user.email;
+    saveToken(await firebase.auth().currentUser.getIdToken(true));
+
+    //console.log(user.email, this.email, app_auth.email);
+    /*window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:register();">키 등록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signout();">로그아웃</a>
+        </li>
+      `;*/
+  } else {
+    thie.email = '';
+    /*window.user = null;
+    window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signin();">로그인</a>
+        </li>
+      `;*/
+  }
+});
 
 async function signin() {
   try {
@@ -40,22 +61,11 @@ async function signin() {
     console.log(`google login`, err);
     return;
   }
-
-  try {
-    var token = await firebase.auth().currentUser.getIdToken();
-    setCookie('__session', token, 100000);
-  } catch (err) {
-    console.log('token', err);
-    return;
-  }
 }
 
-async function registerKey() {
-  var key = prompt('제작자에게 발급받은 키를 입력하세요');
+async function signout() {
+  await firebase.auth().signOut();
 
-  if (key === false) return;
-
-  const response = await axios.post('/api/key', {
-    key: key,
-  });
+  deleteCookie('__session');
+  location.reload();
 }

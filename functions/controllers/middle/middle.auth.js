@@ -7,8 +7,6 @@ try {
   admin.initializeApp();
 } catch (e) {}
 
-var ApiResponse = require('../../models/class/apiresponse');
-
 // #region Public functions
 
 router.use(cookieParser);
@@ -18,7 +16,7 @@ router.use(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer ') == false ||
     !(req.cookies && req.cookies.__session)
   ) {
-    res.status(403).json(new ApiResponse(false, 'Unauthorized', null));
+    res.status(403).send('authorization failed');
     return;
   }
 
@@ -29,7 +27,8 @@ router.use(async (req, res, next) => {
     next();
     return;
   } catch (err) {
-    res.status(403).json(new ApiResponse(false, 'Unauthorized', null));
+    res.status(403).send(err);
+    next();
     return;
   }
 });

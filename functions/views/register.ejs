@@ -1,0 +1,58 @@
+<div id="app" style="margin-top:2.5em;">
+  <h1>제품 등록</h1>
+
+  <div class="alert alert-primary">
+    제품 키를 입력 한 후 몇가지 절차를 완료하면 사용이 가능 합니다
+  </div>
+
+  <div class="form-group">
+    <label>제품 키를 입력하세요</label>
+    <input type="text" class="form-control" id="product-key" />
+  </div>
+
+  <div class="alert alert-info">
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <div class="form-group">
+      <label>sdasd</label>
+      <input type="text" class="form-control" id="asd" placeholder="asdasd" />
+    </div>
+    <button class="btn btn-info">dasdasdas</button>
+  </div>
+</div>
+
+<script>
+  (async () => {
+    try {
+      x = await axios.get('/api/key/verify', {
+        params: {
+          key: '2bd3135ae80cf1fa94465a769122d362',
+        },
+        headers: {
+          Authorization: 'Bearer ' + getCookie('__session'),
+        },
+      });
+    } catch (err) {
+      console.log(err.response);
+      alert(err.response.statusText + ' - ' + err.response.data);
+    }
+  })();
+</script>

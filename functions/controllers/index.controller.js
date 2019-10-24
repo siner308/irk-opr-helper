@@ -14,6 +14,12 @@ router.get('/itsme', (req, res, next) => {
     pageName: 'itsme',
   });
 });
+
+router.get('/register', (req, res, next) => {
+  res.render('register', {
+    pageName: 'register',
+  });
+});
 // #endregion
 
 module.exports = router;

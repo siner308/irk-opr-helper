@@ -189,16 +189,4 @@
   </div>
 </div>
 
-<script src="/js/vue/auth.js"></script>
 <script src="/js/vue/index.js"></script>
-<script>
-  (async function a() {
-    var response = await axios.get('/api/key', {
-      headers: {
-        Authorization: 'Bearer ' + getCookie('__session'),
-        'Content-Type': 'application/json',
-      },
-    });
-    //console.log(response);
-  })();
-</script>
