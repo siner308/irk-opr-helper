@@ -3,7 +3,7 @@ const router = express.Router();
 
 const admin = require('firebase-admin');
 
-const apiFunc = require('../../models/class/apiResponse');
+const ApiResponse = require('../../models/class/apiresponse');
 const model = require('../../models/model.user');
 
 // #region Public functions

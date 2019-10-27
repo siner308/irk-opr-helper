@@ -1,8 +1,9 @@
-var ApiResponse = require('./class/apiResponse');
+var ApiResponse = require('./class/apiresponse');
 var moment = require('moment-timezone');
 var admin = require('firebase-admin');
 var db = admin.database();
 var ref = db.ref('users');
+var functions = require('./class/functions');
 
 // #region Public functions
 

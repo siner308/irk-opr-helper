@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var ApiResponse = require('../../models/class/apiResponse');
+var ApiResponse = require('../../models/class/apiresponse');
 var dicmodel = require('../../models/model.dic');
 
 // #region Public functions

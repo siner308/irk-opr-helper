@@ -1,4 +1,4 @@
-var apifunc = require('./class/apiResponse');
+var ApiResponse = require('./class/apiresponse');
 var moment = require('moment-timezone');
 var admin = require('firebase-admin');
 var db = admin.database();
@@ -64,10 +64,10 @@ async function add(name, x, y, image, codename) {
     const err = await newDocRef.set(newRow);
     newRow.key = newDocRef.key;
 
-    if (err) return new apifunc(false, err, null);
-    else return new apifunc(true, null, newRow);
+    if (err) return new ApiResponse(false, err, null);
+    else return new ApiResponse(true, null, newRow);
   } catch (err) {
-    return new apifunc(false, err, null);
+    return new ApiResponse(false, err, null);
   }
 }
 module.exports.add = add;
