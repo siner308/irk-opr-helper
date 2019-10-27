@@ -3,7 +3,7 @@ const router = express.Router();
 
 const admin = require('firebase-admin');
 
-var ApiResponse = require('../../models/class/apiresponse');
+const apiFunc = require('../../models/class/apiResponse');
 const model = require('../../models/model.user');
 
 // #region Public functions
@@ -13,11 +13,11 @@ router.get('/key/verify', async (req, res, next) => {
   var user = req.user;
 
   if (user == null) res.status(403).send();
-  if (key == null) res.json(new ApiResponse(false, 'NO KEY', null));
+  if (key == null) res.json(new apifunc(false, 'NO KEY', null));
 
   var result = await model.keyVerify(key, user.email);
 
-  res.json(new ApiResponse(result != null && result.length > 0, null, null));
+  res.json(new apifunc(result != null && result.length > 0, null, null));
 });
 
 router.post('/key/activate', async (req, res, next) => {
@@ -25,7 +25,7 @@ router.post('/key/activate', async (req, res, next) => {
   var user = req.user;
 
   if (user == null) res.status(403).send();
-  if (key == null) res.json(new ApiResponse(false, 'NO KEY', null));
+  if (key == null) res.json(new apifunc(false, 'NO KEY', null));
 
   var result = await model.keyVerify(key, user.email);
 

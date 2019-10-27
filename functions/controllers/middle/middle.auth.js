@@ -27,8 +27,7 @@ router.use(async (req, res, next) => {
     next();
     return;
   } catch (err) {
-    res.status(403).send(err);
-    next();
+    res.status(403).send('authorization failed');
     return;
   }
 });

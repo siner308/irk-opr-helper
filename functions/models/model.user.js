@@ -1,4 +1,4 @@
-var ApiResponse = require('./class/apiresponse');
+var ApiResponse = require('./class/apiResponse');
 var moment = require('moment-timezone');
 var admin = require('firebase-admin');
 var db = admin.database();
@@ -6,18 +6,17 @@ var ref = db.ref('users');
 
 // #region Public functions
 
+/**
+ * 제품키가 유효한지 검증 합니다
+ * @param { String } key
+ * @param { String } email
+ */
 async function keyVerify(key, email) {
   try {
     const searched = ref.orderByChild('key').equalTo(key);
     var fetched = await searched.once('value');
     fetched = fetched.val();
     if (fetched == null) return null;
-
-    // 연관 오브젝트를 배열로 변환, 키값은 property 로 변환
-    var result = [];
-    Object.keys(fetched).map((key, i, a) => {
-      result.push(fetched[key]);
-    });
 
     result = result.filter((v, i, a) => {
       return v.email == email && v.isActive == false;

@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var ApiResponse = require('../../models/class/apiresponse');
-var dicmodel = require('../../models/dic');
+var ApiResponse = require('../../models/class/apiResponse');
+var dicmodel = require('../../models/model.dic');
 
 // #region Public functions
 
@@ -11,8 +11,16 @@ var dicmodel = require('../../models/dic');
  */
 router.get('/dic', async (req, res, next) => {
   var keyword = req.query.keyword;
-  if (keyword == undefined || keyword == '')
-    return res.json(new ApiResponse(false, 'KEYWORD IS EMPTY', null));
+
+  // 검색어가 없는 경우 전체 리스트
+  if (keyword == undefined || keyword == '') {
+    try {
+      return res.json(new ApiResponse(true, null, await dicmodel.list()));
+    } catch (err) {
+      console.log(err);
+      return res.json(new ApiResponse(false, err, null));
+    }
+  }
 
   var splitted = keyword.split(' ');
 
