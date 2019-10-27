@@ -50,6 +50,18 @@
           Authorization: 'Bearer ' + getCookie('__session'),
         },
       });
+
+      y = await axios.post(
+        '/api/key/activate',
+        {
+          key: '2bd3135ae80cf1fa94465a769122d362',
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + getCookie('__session'),
+          },
+        },
+      );
     } catch (err) {
       console.log(err.response);
       alert(err.response.statusText + ' - ' + err.response.data);
