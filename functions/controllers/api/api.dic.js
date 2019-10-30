@@ -1,26 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-var ApiResponse = require('../../models/class/apiresponse');
-var dicmodel = require('../../models/model.dic');
+var AR = require('../../models/class/apiresponse');
+var model = require('../../models/model.dic');
+var f = require('../../models/class/functions');
 
 // #region Public functions
 
 /**
- * 영어로 한글을 가져옴, 띄어쓰기 단위로 각각 번역해서 가져옴
+ * 영어로 한글을 가져옴, 문장을 넣으면 띄어쓰기 단위로 각각 번역해서 가져옴
  */
-router.get('/dic', async (req, res, next) => {
+router.get('/dic', async (req, res) => {
   var keyword = req.query.keyword;
 
-  // 검색어가 없는 경우 전체 리스트
-  if (keyword == undefined || keyword == '') {
-    try {
-      return res.json(new ApiResponse(true, null, await dicmodel.list()));
-    } catch (err) {
-      console.log(err);
-      return res.json(new ApiResponse(false, err, null));
-    }
-  }
+  if (f.isEmpty(keyword))
+    return res.json(new AR(false, 'KEYWORD IS EMPTY', null));
 
   var splitted = keyword.split(' ');
 
@@ -32,18 +26,18 @@ router.get('/dic', async (req, res, next) => {
       try {
         result.push(await search(s));
       } catch (err) {
-        return res.json(new ApiResponse(false, err, null));
+        return res.json(new AR(false, err, null));
       }
     }
 
-    return res.json(new ApiResponse(true, null, result.join(' ')));
+    return res.json(new AR(true, null, result.join(' ')));
   }
   // 한 단어인 경우
   else {
     try {
-      return res.json(new ApiResponse(true, null, await search(keyword)));
+      return res.json(new AR(true, null, await search(keyword)));
     } catch (err) {
-      return res.json(new ApiResponse(false, err, null));
+      return res.json(new AR(false, err, null));
     }
   }
 
@@ -53,7 +47,9 @@ router.get('/dic', async (req, res, next) => {
    */
   async function search(key) {
     try {
-      var find = await dicmodel.search(key);
+      var find = await model.search(key);
+
+      // 번역 할 것이 없으면 원문을 다시 내보냄
       if (find == null) return key;
       else return find[Object.keys(find)[0]].korean;
     } catch (err) {
@@ -65,69 +61,59 @@ router.get('/dic', async (req, res, next) => {
 /**
  * 사전 추가 컨트롤러
  */
-router.post('/dic', async (req, res, next) => {
+router.post('/dic', async (req, res) => {
   var korean = req.body.korean;
   var english = req.body.english.toLowerCase();
   var codename = req.body.codename;
 
-  if (isEmpty(english))
-    return res.json(new ApiResponse(false, 'ENGLISH IS EMPTY', null));
-  if (isEmpty(korean))
-    return res.json(new ApiResponse(false, 'KOREAN IS EMPTY', null));
-  if (isEmpty(codename))
-    return res.json(new ApiResponse(false, 'CODENAME IS EMPTY', null));
+  if (f.isEmpty(english))
+    return res.json(new AR(false, 'ENGLISH IS EMPTY', null));
+  if (f.isEmpty(korean))
+    return res.json(new AR(false, 'KOREAN IS EMPTY', null));
+  if (f.isEmpty(codename))
+    return res.json(new AR(false, 'CODENAME IS EMPTY', null));
 
   /**
    * @type { ApiResponse }
    */
-  var responseBody = await dicmodel.add(english, korean, codename);
+  var responseBody = await model.add(english, korean, codename);
   res.json(responseBody);
 });
 
 /**
  * 사전 수정 컨트롤러
  */
-router.put('/dic', async (req, res, next) => {
+router.put('/dic', async (req, res) => {
   var key = req.body.key;
   var english = req.body.english;
   var korean = req.body.korean;
   var codename = req.body.codename;
 
-  if (isEmpty(english) && isEmpty(korean))
-    return res.json(new ApiResponse(false, 'VALUE IS EMPTY', null));
-  if (isEmpty(key))
-    return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
-  if (isEmpty(codename))
-    return res.json(new ApiResponse(false, 'CODENAME IS EMPTY', null));
+  if (f.isEmpty(english) && f.isEmpty(korean))
+    return res.json(new AR(false, 'VALUE IS EMPTY', null));
+  if (f.isEmpty(key)) return res.json(new AR(false, 'KEY IS EMPTY', null));
+  if (f.isEmpty(codename))
+    return res.json(new AR(false, 'CODENAME IS EMPTY', null));
 
-  var responseBody = await dicmodel.update(key, english, korean, codename);
+  var responseBody = await model.update(key, english, korean, codename);
   return res.json(responseBody);
 });
 
 /**
  * 사전 삭제 컨트롤러
  */
-router.delete('/dic', async (req, res, next) => {
+router.delete('/dic', async (req, res) => {
   var key = req.body.key;
 
-  if (isEmpty(key))
-    return res.json(new ApiResponse(false, 'KEY IS EMPTY', null));
+  if (f.isEmpty(key)) return res.json(new AR(false, 'KEY IS EMPTY', null));
 
-  var responseBody = await dicmodel.remove(key);
+  var responseBody = await model.remove(key);
   return res.json(responseBody);
 });
 
 // #endregion
 
 // #region Private funcs
-
-/**
- * 비었거나 null 인지 체크
- * @param { string } value 체크 할 값
- */
-function isEmpty(value) {
-  return value == undefined || value == '';
-}
 
 // #endregion
 

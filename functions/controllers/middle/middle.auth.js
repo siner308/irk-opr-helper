@@ -3,6 +3,7 @@ const router = express.Router();
 const cookieParser = require('cookie-parser')();
 
 const admin = require('firebase-admin');
+
 try {
   admin.initializeApp();
 } catch (e) {}
@@ -16,7 +17,7 @@ router.use(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer ') == false ||
     !(req.cookies && req.cookies.__session)
   ) {
-    res.status(403).send('authorization failed');
+    res.status(403).send('authorization failed - no headers');
     return;
   }
 
@@ -27,7 +28,7 @@ router.use(async (req, res, next) => {
     next();
     return;
   } catch (err) {
-    res.status(403).send('authorization failed');
+    res.status(403).send('authorization failed - invalid user');
     return;
   }
 });
