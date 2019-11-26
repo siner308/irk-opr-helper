@@ -1,0 +1,53 @@
+<div id="app" style="margin-top:2.5em;">
+  <h1>
+    접니다
+  </h1>
+
+  <table class="table table-striped table-sm" id="itsmetable">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col" class="text-center">
+          포털명
+        </th>
+        <th scope="col" class="text-center">
+          포털 이미지
+        </th>
+        <th scope="col" class="text-center">
+          신청자
+        </th>
+        <th scope="col" class="text-center">
+          신청일시
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(row, k, index) in items" :key="row.key" ref="items">
+        <td>
+          {{ row.name }}
+        </td>
+        <td class="text-center">
+          <img v-bind:src="row.image" style="width:5em;" />
+        </td>
+        <td class="text-center">
+          <span class="badge badge-info">{{ row.creator }}</span>
+        </td>
+        <td class="text-center">{{ row.createtime }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="/js/vue/auth.js"></script>
+<script src="/js/vue/itsme.js"></script>
+
+<script>
+  (async function a() {
+    var response = await axios.get('/api/key', {
+      headers: {
+        Authorization: 'Bearer ' + getCookie('__session'),
+        'Content-Type': 'application/json',
+      },
+    });
+    //console.log(response);
+  })();
+</script>

@@ -14,64 +14,58 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 var provider = new firebase.auth.GoogleAuthProvider();
-
 provider.addScope('https://www.googleapis.com/auth/firebase.readonly');
 firebase.auth().languageCode = 'kr';
 
-window.user = null;
+function saveToken(token) {
+  setCookie('__session', token, 100000);
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      window.user = {
-        name: user.displayName,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        uid: user.uid,
-      };
-      x = window.user;
-      window.document.querySelector(
-        '#auth',
-      ).innerHTML = `<a class="nav-link" href="javascript:signout();">${x.email} - 로그아웃</a>`;
-    } else {
-      window.user = null;
-      window.document.querySelector(
-        '#auth',
-      ).innerHTML = `<a class="nav-link" href="javascript:signin();">로그인</a>`;
-    }
-  });
+firebase.auth().onAuthStateChanged(async user => {
+  if (user) {
+    app_auth.email = user.email;
+    saveToken(await firebase.auth().currentUser.getIdToken(true));
+
+    //console.log(user.email, this.email, app_auth.email);
+    /*window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:register();">키 등록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signout();">로그아웃</a>
+        </li>
+      `;*/
+  } else {
+    thie.email = '';
+    /*window.user = null;
+    window.document.querySelector('#auth').innerHTML = `
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:signin();">로그인</a>
+        </li>
+      `;*/
+  }
 });
 
-function signout() {
-  firebase
-    .auth()
-    .signOut()
-    .then(function() {
-      location.reload();
-    })
-    .catch(function(error) {
-      // An error happened.
-    });
+async function signin() {
+  try {
+    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  } catch (err) {
+    alert(err.message);
+    console.log(err.message);
+  }
+
+  try {
+    var result = await firebase.auth().signInWithPopup(provider);
+    user = result.user;
+  } catch (err) {
+    console.log(`google login`, err);
+    return;
+  }
 }
 
-function signin() {
-  firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then(function(result) {
-      location.reload();
-    })
-    .catch(function(err) {
-      alert(err.message);
-    });
-}
+async function signout() {
+  await firebase.auth().signOut();
 
-/**
- * 구글 로그인 되어있을 때
- * - 쿠키 찾아봐서 있으면 앱 로그인으로 인식
- * - 서버에 정식 유저인지 요청
- *   - 맞으면 쿠키 저장
- *   - 틀리면 인증된 사용자 아니라고 출력
- *
- * 구글 로그인 아니면 로그인 버튼 출력
- */
+  deleteCookie('__session');
+  location.reload();
+}

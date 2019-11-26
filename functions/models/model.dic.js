@@ -3,6 +3,7 @@ var moment = require('moment-timezone');
 var admin = require('firebase-admin');
 var db = admin.database();
 var dicRef = db.ref('dic');
+var funcs = require('./class/functions');
 
 // #region Public functions
 
@@ -10,7 +11,7 @@ var dicRef = db.ref('dic');
  * 사전 검색
  * @param { string } english
  */
-async function search(english) {
+module.exports.search = async english => {
   try {
     const searched = await dicRef
       .orderByChild('english')
@@ -20,8 +21,7 @@ async function search(english) {
   } catch (err) {
     throw err;
   }
-}
-module.exports.search = search;
+};
 
 /**
  * 사전에 새 Entity를 등록
