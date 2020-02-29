@@ -54,7 +54,7 @@ OPR Tools 코드를 기반으로 제작되었습니다
 ### 기타 도움이 되는 프로그램
 - OPR Tools
   - 리콘에 도움이 많이 되는 프로그램 입니다. 점수를 키보드로 줄 수 있어 빠른 리콘을 돕습니다
-  - https://gitlab.com/1110101/opr-tools/raw/master/opr-tools.user.js
+  - https://gitlab.com/1110101/opr-tools/raw/feature/wayfarerSupport/opr-tools.user.js
   
 ### 설치 방법
 1. 사용할 브라우저에서 위의 TamperMonkey 플러그인을 설치한다
