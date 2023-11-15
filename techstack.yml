@@ -1,0 +1,164 @@
+repo_name: siner308/irk-opr-helper
+report_id: '0191c89eb737a58a00accf9876860849'
+repo_type: Public
+timestamp: '2023-11-15T10:23:30+00:00'
+requested_by: siner308
+provider: github
+branch: master
+detected_tools_count: 11
+tools:
+- name: CSS 3
+  description: The latest evolution of the Cascading Style Sheets language
+  website_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source: Repo Metadata
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source: Repo Metadata
+- name: ExpressJS
+  description: Sinatra inspired web development framework for node.js -- insanely
+    fast, flexible, and simple
+  website_url: http://expressjs.com/
+  version: 4.17.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Microframeworks (Backend)
+  image_url: https://img.stackshare.io/service/1163/hashtag.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-07 04:29:29.000000000 Z
+- name: Firebase
+  description: The Realtime App Platform
+  website_url: https://firebase.google.com/
+  open_source: false
+  hosted_saas: true
+  category: Application Hosting
+  sub_category: Realtime Backend / API
+  image_url: https://img.stackshare.io/service/116/cZLxNFZS.jpg
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-09 02:35:02.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-07 04:29:29.000000000 Z
+- name: body-parser
+  description: Node.js body parsing middleware
+  package_url: https://www.npmjs.com/body-parser
+  version: 1.19.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15906/default_7c39a83d4acd952df89b1ebfdb94c8646324fbf1.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-07 04:29:29.000000000 Z
+- name: cors
+  description: Node.js CORS middleware
+  package_url: https://www.npmjs.com/cors
+  version: 2.8.5
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16165/default_41f04716a804e853d5c38a5b81ee0ea8a842ad82.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-07 04:29:29.000000000 Z
+- name: express
+  description: Fast, unopinionated, minimalist web framework
+  package_url: https://www.npmjs.com/express
+  version: 4.17.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15818/default_db4a7791d2f1174547374b9b587bc10fec088a5a.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-07 04:29:29.000000000 Z
+  vulnerabilities:
+  - name: qs vulnerable to Prototype Pollution
+    cve_id: CVE-2022-24999
+    cve_url: https://github.com/advisories/GHSA-hrpp-h998-j3pp
+    detected_date: Dec 7
+    severity: high
+    first_patched: 4.17.3
+- name: firebase-admin
+  description: Firebase admin SDK for Node.js
+  package_url: https://www.npmjs.com/firebase-admin
+  version: 8.6.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/17151/default_21a9522c66101ebad0e63609af74acb35fe29a0a.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-09 02:35:02.000000000 Z
+- name: moment-timezone
+  description: Parse and display moments in any timezone
+  package_url: https://www.npmjs.com/moment-timezone
+  version: 0.5.26
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16298/default_8b65a873fd3277d73483d6846fa38192391abf23.png
+  detection_source_url: functions/package-lock.json
+  detection_source: functions/package.json
+  last_updated_by: HawkBro
+  last_updated_on: 2019-10-09 02:35:02.000000000 Z
+  vulnerabilities:
+  - name: Cleartext Transmission of Sensitive Information in moment-timezone
+    cve_id: 
+    cve_url: https://github.com/advisories/GHSA-v78c-4p63-2j6c
+    detected_date: Aug 31
+    severity: moderate
+    first_patched: 0.5.35
+  - name: Command Injection in moment-timezone
+    cve_id: 
+    cve_url: https://github.com/advisories/GHSA-56x4-j7p9-fcf9
+    detected_date: Aug 31
+    severity: low
+    first_patched: 0.5.35
