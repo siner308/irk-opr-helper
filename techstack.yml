@@ -1,7 +1,8 @@
 repo_name: siner308/irk-opr-helper
 report_id: '0191c89eb737a58a00accf9876860849'
+version: 0.1
 repo_type: Public
-timestamp: '2023-11-15T10:23:30+00:00'
+timestamp: '2024-01-05T08:40:34+00:00'
 requested_by: siner308
 provider: github
 branch: master
@@ -15,6 +16,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/siner308/irk-opr-helper
   detection_source: Repo Metadata
 - name: JavaScript
   description: Lightweight, interpreted, object-oriented language with first-class
@@ -25,6 +27,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/siner308/irk-opr-helper
   detection_source: Repo Metadata
 - name: ExpressJS
   description: Sinatra inspired web development framework for node.js -- insanely
@@ -37,7 +40,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Microframeworks (Backend)
   image_url: https://img.stackshare.io/service/1163/hashtag.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-07 04:29:29.000000000 Z
@@ -49,6 +52,7 @@ tools:
   category: Application Hosting
   sub_category: Realtime Backend / API
   image_url: https://img.stackshare.io/service/116/cZLxNFZS.jpg
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-09 02:35:02.000000000 Z
@@ -60,6 +64,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/siner308/irk-opr-helper
   detection_source: Repo Metadata
 - name: npm
   description: The package manager for JavaScript.
@@ -69,6 +74,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Front End Package Manager
   image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-07 04:29:29.000000000 Z
@@ -82,7 +88,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15906/default_7c39a83d4acd952df89b1ebfdb94c8646324fbf1.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-07 04:29:29.000000000 Z
@@ -96,7 +102,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16165/default_41f04716a804e853d5c38a5b81ee0ea8a842ad82.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-07 04:29:29.000000000 Z
@@ -110,7 +116,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15818/default_db4a7791d2f1174547374b9b587bc10fec088a5a.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-07 04:29:29.000000000 Z
@@ -131,7 +137,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/17151/default_21a9522c66101ebad0e63609af74acb35fe29a0a.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-09 02:35:02.000000000 Z
@@ -145,7 +151,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16298/default_8b65a873fd3277d73483d6846fa38192391abf23.png
-  detection_source_url: functions/package-lock.json
+  detection_source_url: https://github.com/siner308/irk-opr-helper/blob/master/functions/package-lock.json
   detection_source: functions/package.json
   last_updated_by: HawkBro
   last_updated_on: 2019-10-09 02:35:02.000000000 Z
